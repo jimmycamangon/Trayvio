@@ -1,0 +1,15 @@
+D:\JimFiles\React\Trayvio\Trayvio.Application\bin\Debug\net9.0\Trayvio.Application.deps.json
+D:\JimFiles\React\Trayvio\Trayvio.Application\bin\Debug\net9.0\Trayvio.Application.dll
+D:\JimFiles\React\Trayvio\Trayvio.Application\bin\Debug\net9.0\Trayvio.Application.pdb
+D:\JimFiles\React\Trayvio\Trayvio.Application\bin\Debug\net9.0\Trayvio.Domain.dll
+D:\JimFiles\React\Trayvio\Trayvio.Application\bin\Debug\net9.0\Trayvio.Domain.pdb
+D:\JimFiles\React\Trayvio\Trayvio.Application\obj\Debug\net9.0\Trayvio.Application.csproj.AssemblyReference.cache
+D:\JimFiles\React\Trayvio\Trayvio.Application\obj\Debug\net9.0\Trayvio.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\JimFiles\React\Trayvio\Trayvio.Application\obj\Debug\net9.0\Trayvio.Application.AssemblyInfoInputs.cache
+D:\JimFiles\React\Trayvio\Trayvio.Application\obj\Debug\net9.0\Trayvio.Application.AssemblyInfo.cs
+D:\JimFiles\React\Trayvio\Trayvio.Application\obj\Debug\net9.0\Trayvio.Application.csproj.CoreCompileInputs.cache
+D:\JimFiles\React\Trayvio\Trayvio.Application\obj\Debug\net9.0\Trayvio..887FC3A2.Up2Date
+D:\JimFiles\React\Trayvio\Trayvio.Application\obj\Debug\net9.0\Trayvio.Application.dll
+D:\JimFiles\React\Trayvio\Trayvio.Application\obj\Debug\net9.0\refint\Trayvio.Application.dll
+D:\JimFiles\React\Trayvio\Trayvio.Application\obj\Debug\net9.0\Trayvio.Application.pdb
+D:\JimFiles\React\Trayvio\Trayvio.Application\obj\Debug\net9.0\ref\Trayvio.Application.dll

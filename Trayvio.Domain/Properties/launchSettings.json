@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Trayvio.API": {
+      "commandName": "Project",
+      "workingDirectory": "D:\\JimFiles\\React\\Trayvio\\Trayvio.API"
+    }
+  }
+}
