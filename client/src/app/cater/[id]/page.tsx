@@ -146,7 +146,7 @@ export default function VendorDetailPage() {
     }
   };
 
-  if (!vendor) return;
+  if (!vendor) return <div />;
 
   return (
     <div className="bg-gray-50 min-h-screen pb-32">
@@ -206,24 +206,21 @@ export default function VendorDetailPage() {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
               Available Menus
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
               {menus.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition p-4 flex flex-col items-center"
-                >
+                <div key={item.id} className="relative h-55 rounded-2xl p-2">
                   <img
                     src={item.imageUrl || "/images/placeholder.jpg"}
                     alt={item.name}
-                    className="h-32 w-full object-cover rounded-xl mb-3"
+                    className="w-full h-40 object-cover rounded-lg"
+                    style={{
+                      boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+                    }}
                   />
-                  <h3 className="font-semibold text-gray-900">{item.name}</h3>
-                  <span className="text-gray-700 font-medium mb-2">
+                  <h5 className="font-semibold text-gray-900 pt-1">{item.name}</h5>
+                  <span className="text-gray-700 font-medium mb-2 text-xs">
                     {item.price}
                   </span>
-                  <button className="text-gray-900 border border-gray-300 rounded-lg px-4 py-1 text-sm hover:bg-gray-100 transition">
-                    View Details
-                  </button>
                 </div>
               ))}
             </div>

@@ -8,7 +8,6 @@ interface CaterCardProps {
 }
 
 export default function CaterCard({ vendor }: CaterCardProps) {
-
   const cardContent = (
     <div className="rounded-2xl bg-white p-2 space-y-3 text-gray-800">
       {/* Optional image or icon */}
@@ -50,7 +49,13 @@ export default function CaterCard({ vendor }: CaterCardProps) {
   );
 
   return vendor.owner?.isActive ? (
-    <Link href={`/cater/${vendor.id}`}>{cardContent}</Link>
+    <Link
+      href={`/cater/${vendor.id}`}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {cardContent}
+    </Link>
   ) : (
     cardContent
   );
