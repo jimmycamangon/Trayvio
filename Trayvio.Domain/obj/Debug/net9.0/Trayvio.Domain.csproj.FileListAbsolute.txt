@@ -10,3 +10,4 @@ D:\JimFiles\React\Trayvio\Trayvio.Domain\obj\Debug\net9.0\Trayvio.Domain.dll
 D:\JimFiles\React\Trayvio\Trayvio.Domain\obj\Debug\net9.0\refint\Trayvio.Domain.dll
 D:\JimFiles\React\Trayvio\Trayvio.Domain\obj\Debug\net9.0\Trayvio.Domain.pdb
 D:\JimFiles\React\Trayvio\Trayvio.Domain\obj\Debug\net9.0\ref\Trayvio.Domain.dll
+D:\JimFiles\React\Trayvio\Trayvio.Domain\obj\Debug\net9.0\Trayvio.Domain.sourcelink.json

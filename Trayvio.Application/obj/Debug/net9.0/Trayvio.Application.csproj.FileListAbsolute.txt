@@ -13,3 +13,4 @@ D:\JimFiles\React\Trayvio\Trayvio.Application\obj\Debug\net9.0\Trayvio.Applicati
 D:\JimFiles\React\Trayvio\Trayvio.Application\obj\Debug\net9.0\refint\Trayvio.Application.dll
 D:\JimFiles\React\Trayvio\Trayvio.Application\obj\Debug\net9.0\Trayvio.Application.pdb
 D:\JimFiles\React\Trayvio\Trayvio.Application\obj\Debug\net9.0\ref\Trayvio.Application.dll
+D:\JimFiles\React\Trayvio\Trayvio.Application\obj\Debug\net9.0\Trayvio.Application.sourcelink.json

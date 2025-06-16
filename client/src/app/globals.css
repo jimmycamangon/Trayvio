@@ -7,7 +7,24 @@ html {
 @custom-variant dark (&:is(.dark *));
 
 body {
-  font-family: 'Nunito', 'Circular', 'Helvetica Neue', Arial, sans-serif;
+  font-family: "Inter", Arial, Helvetica, sans-serif;
+  font-size: 12px; /* minimalist, readable size */
+  font-weight: 400;
+  color: #222; /* dark gray for minimalism */
+  background: #fff; /* clean white background */
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+  margin: 0 0 0.5em 0;
 }
 
 @theme inline {

@@ -180,9 +180,11 @@ export default function VendorDetailPage() {
                   <span>·</span>
                   <span>
                     {caterer.status === "Active" ? (
-                      <span className="text-green-600 font-medium">Active</span>
+                      <span className="bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded-full">
+                        Active
+                      </span>
                     ) : (
-                      <span className="text-red-500 font-medium">
+                      <span className="bg-red-100 text-red-700 text-xs font-medium px-2 py-1 rounded-full">
                         Not accepting bookings
                       </span>
                     )}
@@ -206,21 +208,29 @@ export default function VendorDetailPage() {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
               Available Menus
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
+            <div className="flex flex-col">
               {menus.map((item) => (
-                <div key={item.id} className="relative h-55 rounded-2xl p-2">
+                <div
+                  key={item.id}
+                  className="relative rounded-2xl p-2 mt-3 flex flex-row gap-4 items-center"
+                >
                   <img
                     src={item.imageUrl || "/images/placeholder.jpg"}
                     alt={item.name}
-                    className="w-full h-40 object-cover rounded-lg"
+                    className="w-1/3 h-30 object-cover rounded-lg"
                     style={{
                       boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
                     }}
                   />
-                  <h5 className="font-semibold text-gray-900 pt-1">{item.name}</h5>
-                  <span className="text-gray-700 font-medium mb-2 text-xs">
-                    {item.price}
-                  </span>
+                  <div className="flex flex-col text-base">
+                    <h5 className="text-gray-950 pt-1">
+                      {item.name}
+                    </h5>
+                    <p className="text-gray-500 font-medium mb-2 text-xs">{item.description}</p>
+                    <span className="text-gray-400 font-medium mb-2 text-xs">
+                      {item.price}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>

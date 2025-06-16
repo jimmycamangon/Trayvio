@@ -17,3 +17,4 @@ D:\JimFiles\React\Trayvio\Trayvio.Infrastructure\obj\Debug\net9.0\refint\Trayvio
 D:\JimFiles\React\Trayvio\Trayvio.Infrastructure\obj\Debug\net9.0\Trayvio.Infrastructure.pdb
 D:\JimFiles\React\Trayvio\Trayvio.Infrastructure\obj\Debug\net9.0\Trayvio.Infrastructure.genruntimeconfig.cache
 D:\JimFiles\React\Trayvio\Trayvio.Infrastructure\obj\Debug\net9.0\ref\Trayvio.Infrastructure.dll
+D:\JimFiles\React\Trayvio\Trayvio.Infrastructure\obj\Debug\net9.0\Trayvio.Infrastructure.sourcelink.json
