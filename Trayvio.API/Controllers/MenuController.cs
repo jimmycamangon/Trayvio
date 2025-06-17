@@ -37,7 +37,6 @@ public class MenuController : ControllerBase
         }
         catch (Exception ex)
         {
-            // Log the exception (not implemented here)
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
@@ -52,7 +51,6 @@ public class MenuController : ControllerBase
         }
         catch (Exception ex)
         {
-            // Log the exception (not implemented here)
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
@@ -74,7 +72,47 @@ public class MenuController : ControllerBase
         }
         catch (Exception ex)
         {
-            // Log the exception (not implemented here)
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<MenuDto>> UpdateMenu(int id, UpdateMenuCommand command)
+    {
+        if (id != command.Id)
+        {
+            return BadRequest("Menu ID mismatch.");
+        }
+
+        try
+        {
+            var result = await _mediator.Send(command);
+            if (result == null)
+            {
+                return NotFound($"Menu with ID {id} not found.");
+            }
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteMenu(int id)
+    {
+        try
+        {
+            var result = await _mediator.Send(new DeleteMenuCommand(id));
+            if (!result)
+            {
+                return NotFound($"Menu with ID {id} not found.");
+            }
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }

@@ -37,7 +37,6 @@ public class FoodItemController : ControllerBase
         }
         catch (Exception ex)
         {
-            // Log the exception (not implemented here)
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
@@ -52,7 +51,6 @@ public class FoodItemController : ControllerBase
         }
         catch (Exception ex)
         {
-            // Log the exception (not implemented here)
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
@@ -63,12 +61,10 @@ public class FoodItemController : ControllerBase
         try
         {
             var foodItemDtos = await _mediator.Send(new GetFoodItemsByVendorIdQuery(vendorId));
-            // Always return 200 OK with an array (empty or not)
             return Ok(foodItemDtos ?? new List<FoodItemDto>());
         }
         catch (Exception ex)
         {
-            // Log the exception (not implemented here)
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
@@ -95,7 +91,6 @@ public class FoodItemController : ControllerBase
         }
         catch (Exception ex)
         {
-            // Log the exception (not implemented here)
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
@@ -114,7 +109,6 @@ public class FoodItemController : ControllerBase
         }
         catch (Exception ex)
         {
-            // Log the exception (not implemented here)
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }

@@ -6,8 +6,8 @@ import {
   GetVendorById,
   GetFoodItemsByVendorId,
   CreateFoodItem,
-  UpdateFoodItem,
-  DeleteFoodItem,
+  UpdateMenu,
+  DeleteMenu,
   GetMenuItemsByVendorId,
   CreateMenu,
 } from "@/lib/api/axios";
@@ -120,7 +120,7 @@ export default function VendorDetailPage() {
         vendorId: vendor.id,
       };
 
-      await UpdateFoodItem(Number(editingItem.id), updateData);
+      await UpdateMenu(Number(editingItem.id), updateData);
 
       setMenus((prev) =>
         prev.map((item) =>
@@ -128,7 +128,7 @@ export default function VendorDetailPage() {
         )
       );
       setEditingItem(null);
-      toast.success("Food item updated successfully!");
+      toast.success("Menu updated successfully!");
     } catch (error: any) {
       console.error("Update error:", error);
       toast.error(`Update failed: ${error.message}`);
@@ -137,11 +137,11 @@ export default function VendorDetailPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      await DeleteFoodItem(Number(id));
+      await DeleteMenu(Number(id));
       setMenus((prev) => prev.filter((item) => Number(item.id) !== Number(id)));
-      toast.success("Food item deleted!");
+      toast.success("Menu deleted!");
     } catch (error) {
-      toast.error("Failed to delete food item.");
+      toast.error("Failed to delete menu.");
       console.error(error);
     }
   };

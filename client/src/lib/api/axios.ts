@@ -223,6 +223,29 @@ export const CreateMenu = async (data: any) => {
   }
 }
 
+export const UpdateMenu = async (id: number, data: any) => {
+  try {
+    const response = await axiosInstance.put(`/menu/${id}`, data);
+    return response.data;
+  } catch (error: any) {
+    console.error(`Failed to update menu ${id}:`, error);
+    // Extract server error message if available
+    const errorMessage = error.response?.data?.message ||
+      error.response?.data?.error ||
+      "Please check your input";
+    throw new Error(errorMessage);
+  }
+};
+
+export const DeleteMenu = async (id: number) => {
+  try {
+    const response = await axiosInstance.delete(`/menu/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to delete menu ${id}:`, error);
+    throw error;
+  }
+}
 
 
 
