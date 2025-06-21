@@ -11,6 +11,7 @@ public class Vendor : BaseEntity
     public User Owner { get; set; } = null!;
     public bool isApproved { get; set; } = false;
     public decimal? CommissionRate { get; set; } = null;
+    public string ImageUrl { get; set; } = string.Empty;
 
     public ICollection<VendorStaff> VendorStaffs { get; set; } = new List<VendorStaff>();
     public ICollection<Menu> Menus { get; set; } = new List<Menu>();

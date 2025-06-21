@@ -19,7 +19,6 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-
   useEffect(() => {
     const fetchVendors = async () => {
       try {
@@ -50,7 +49,6 @@ export default function Home() {
           </h1> */}
           <p className="text-sm sm:text-base md:text-lg font-bold text-left mt-6">
             {/* Discover and book the best catering for your next event. */}
-
             Popular in Manila
           </p>
 
@@ -108,7 +106,7 @@ export default function Home() {
                   </div>
                   <div className="ml-3">
                     <h3 className="text-sm font-medium text-red-800">
-                      Error loading products
+                      Error loading vendors
                     </h3>
                     <p className="mt-1 text-sm text-red-700">{error}</p>
                     <button
@@ -122,8 +120,28 @@ export default function Home() {
               </div>
             </div>
           ) : vendors.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">No products available</p>
+            <div className="flex flex-col items-center justify-center py-12">
+              <svg
+                className="w-16 h-16 text-gray-300 mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 48 48"
+              >
+                <circle cx="24" cy="24" r="20" strokeWidth="4" />
+                <path
+                  d="M16 32h16M16 24h16M16 16h16"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <h2 className="text-xl font-semibold text-gray-700 mb-2">
+                No Vendors Yet
+              </h2>
+              <p className="text-gray-500 mb-4 text-center">
+                We’re working hard to bring you the best caterers.
+                <br />
+                Please check back soon!
+              </p>
             </div>
           ) : (
             <Carousel
@@ -153,7 +171,6 @@ export default function Home() {
           )}
         </div>
       </section>
-     
     </main>
   );
 }

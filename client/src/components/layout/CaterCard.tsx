@@ -25,9 +25,9 @@ export default function CaterCard({ vendor }: CaterCardProps) {
       </div>
 
       <div className="flex items-center justify-between">
-        <h5 className="font-semibold">{vendor.name}</h5>
+        <h5>{vendor.name}</h5>
         <span
-          className={`text-xs font-medium px-2 py-1 rounded-full ${
+          className={`px-2 py-1 rounded-full ${
             vendor.owner?.isActive
               ? "bg-green-100 text-green-700"
               : "bg-red-100 text-red-700"
@@ -36,10 +36,9 @@ export default function CaterCard({ vendor }: CaterCardProps) {
           {vendor.owner?.isActive ? "Active" : "Inactive"}
         </span>
       </div>
-
-      <p className="text-xs text-gray-600 text-start">{vendor.description}</p>
+      <p className="text-gray-600 text-start">{vendor.description}</p>
       {!vendor.owner?.isActive && (
-        <p className="text-xs text-start">
+        <p className="text-start">
           <span className="rounded-full bg-gray-800 w-auto text-white px-2 py-1">
             Coming Soon
           </span>

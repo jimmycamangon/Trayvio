@@ -12,6 +12,7 @@ public class VendorDto
     public UserDto Owner { get; set; } = null!;
     public bool IsApproved { get; set; } = false;
     public decimal? CommissionRate { get; set; } = null;
+    public string ImageUrl { get; set; } = string.Empty;
 
     public ICollection<MenuDto> Menus { get; set; } = new List<MenuDto>();
 }

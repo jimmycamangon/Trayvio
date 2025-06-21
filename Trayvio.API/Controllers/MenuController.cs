@@ -61,14 +61,8 @@ public class MenuController : ControllerBase
         try
         {
             var menuDtos = await _mediator.Send(new GetMenusByVendorIdQuery(vendorId));
-            if (menuDtos == null || !menuDtos.Any())
-            {
-                return NotFound($"No menus found for vendor with ID {vendorId}.");
-            }
-            else
-            {
-                return Ok(menuDtos);
-            }
+
+            return Ok(menuDtos);
         }
         catch (Exception ex)
         {

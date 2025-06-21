@@ -6,6 +6,7 @@ public class User : BaseEntity
     public string Email { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
     public string Role { get; set; } = "Customer"; // Default role is Customer
+    public string ImageUrl { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
     public CustomerProfile? CustomerProfile { get; set; }
 

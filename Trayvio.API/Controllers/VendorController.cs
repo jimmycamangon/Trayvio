@@ -26,14 +26,8 @@ public class VendorController : ControllerBase
         try
         {
             var vendorDtos = await _mediator.Send(new GetVendorsQuery());
-            if (vendorDtos == null || !vendorDtos.Any())
-            {
-                return NotFound("No vendors found.");
-            }
-            else
-            {
-                return Ok(vendorDtos);
-            }
+
+            return Ok(vendorDtos ?? new List<VendorDto>());
         }
         catch (Exception ex)
         {

@@ -175,16 +175,16 @@ export const GetVendorById = async (id: number) => {
 }
 
 
-// User
-export const GetUsers = async () => {
-  try {
-    const response = await axiosInstance.get('/user'); // or '/users' depending on your route
-    return response.data;
-  } catch (error) {
-    console.error('Failed to fetch users:', error);
-    throw error;
-  }
-};
+// // User
+// export const GetUsers = async () => {
+//   try {
+//     const response = await axiosInstance.get('/user'); // or '/users' depending on your route
+//     return response.data;
+//   } catch (error) {
+//     console.error('Failed to fetch users:', error);
+//     throw error;
+//   }
+// };
 
 
 
@@ -199,19 +199,19 @@ export const GetMenus = async () => {
   }
 }
 
-export const GetMenuItemsByVendorId = async (id: number) => {
+export const GetMenusByVendor = async (id: number) => {
   try {
     const response = await axiosInstance.get(`/menu/vendor/${id}`);
     return response.data;
   } catch (error: any) {
     if (error.response && error.response.status === 404) {
-      // Return empty array if no menu items found
+      // No menu items found for this vendor, return empty array
       return [];
     }
     console.error(`Failed to fetch menu items for vendor ${id}:`, error);
     throw error;
   }
-}
+};
 
 export const CreateMenu = async (data: any) => {
   try {

@@ -8,7 +8,7 @@ public class Reservation : BaseEntity
     public Vendor Vendor { get; set; } = null!;
     public DateTime ReservationDate { get; set; }
     public int NumberOfGuests { get; set; }
-    public string EventLoation { get; set; } = string.Empty;
+    public string EventLocation { get; set; } = string.Empty;
     public string Status { get; set; } = "Pending"; // Pending, Confirmed, Cancelled
     public string Remarks { get; set; } = string.Empty;
 

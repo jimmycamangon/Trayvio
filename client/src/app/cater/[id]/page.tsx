@@ -8,7 +8,7 @@ import {
   CreateFoodItem,
   UpdateMenu,
   DeleteMenu,
-  GetMenuItemsByVendorId,
+  GetMenusByVendor,
   CreateMenu,
 } from "@/lib/api/axios";
 import { Menu } from "@/types/menu";
@@ -26,15 +26,12 @@ import { Button } from "@/components/ui/button";
 
 // Dummy data for illustration
 const caterer = {
-  name: "Fiesta Flavors Catering",
   rating: 4.8,
-  location: "Quezon City, Metro Manila",
-  status: "Active",
   description:
     "Specializing in Filipino-Spanish cuisine for weddings, birthdays, and corporate events.",
   coverImages: [
-    "/images/fooditems/0e023f2e-490e-4be6-b341-d44a8acec732.jpg",
-    "/images/fooditems/7e30a7c5-3e2e-4f6f-a4d5-6aa16cceaaf3.jpg",
+    "/images/fooditems/f7cb14bd-49b5-4e7b-8899-28ccdf769869.jpg",
+    "/images/fooditems/e9361d96-c3db-40e2-bc28-8699ac98efd7.jpg",
     "/images/fooditems/74af6abd-e6ff-4a37-8e55-ad53dee078d3.jpg",
   ],
   menus: [
@@ -49,7 +46,7 @@ const caterer = {
   ],
   gallery: [
     "/images/fooditems/69438236-9c12-4108-9cda-775253efba98.jpg",
-    "/images/fooditems/ed1077ac-d6f9-4c5f-aac3-e17e6127cca0.jpg",
+    "/images/fooditems/e9361d96-c3db-40e2-bc28-8699ac98efd7.jpg",
     // ...more images
   ],
   reviews: [
@@ -74,7 +71,7 @@ export default function VendorDetailPage() {
   useEffect(() => {
     if (id) {
       GetVendorById(Number(id)).then(setVendor).catch(console.error);
-      GetMenuItemsByVendorId(Number(id))
+      GetMenusByVendor(Number(id))
         .then(setMenus)
         .catch((error) => {
           // If 404, treat as no food items
@@ -169,17 +166,23 @@ export default function VendorDetailPage() {
           {/* 2. Caterer Info Header */}
           <section className="border-b p-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div>
+              <div className="flex flex-col items-center md:items-start">
+                <img
+                  src={vendor.imageUrl || "/images/placeholder.jpg"}
+                  alt={vendor.name}
+                  className="w-34 h-34 object-cover rounded-lg mb-4"
+                  style={{ boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px" }}
+                />
                 <h1 className="text-2xl font-bold text-gray-900">
-                  {caterer.name}
+                  {vendor.name}
                 </h1>
                 <div className="flex items-center gap-3 mt-2 text-gray-600 text-base">
                   <span>⭐ {caterer.rating}</span>
                   <span>·</span>
-                  <span>{caterer.location}</span>
+                  <span>{vendor.address}</span>
                   <span>·</span>
                   <span>
-                    {caterer.status === "Active" ? (
+                    {vendor.isApproved ? (
                       <span className="bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded-full">
                         Active
                       </span>
@@ -191,9 +194,6 @@ export default function VendorDetailPage() {
                   </span>
                 </div>
               </div>
-              <button className="px-6 py-2 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition">
-                {caterer.status === "Active" ? "Send Inquiry" : "Book Now"}
-              </button>
             </div>
           </section>
 
@@ -206,34 +206,79 @@ export default function VendorDetailPage() {
           {/* 4. Available Menus / Food Packages */}
           <section className="border-b p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              Available Menus
+              Menus <MenuForm vendorId={vendor.id} onSubmit={handleCreate} />
             </h2>
-            <div className="flex flex-col">
-              {menus.map((item) => (
-                <div
-                  key={item.id}
-                  className="relative rounded-2xl p-2 mt-3 flex flex-row gap-4 items-center"
+            {loading ? (
+              <p>Loading Menus...</p>
+            ) : error ? (
+              <p className="text-red-600">Error: {error}</p>
+            ) : menus.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-8">
+                <svg
+                  className="w-12 h-12 text-gray-300 mb-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 48 48"
                 >
-                  <img
-                    src={item.imageUrl || "/images/placeholder.jpg"}
-                    alt={item.name}
-                    className="w-1/3 h-30 object-cover rounded-lg"
-                    style={{
-                      boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
-                    }}
+                  <circle cx="24" cy="24" r="20" strokeWidth="4" />
+                  <path
+                    d="M16 32h16M16 24h16M16 16h16"
+                    strokeWidth="4"
+                    strokeLinecap="round"
                   />
-                  <div className="flex flex-col text-base">
-                    <h5 className="text-gray-950 pt-1">
-                      {item.name}
-                    </h5>
-                    <p className="text-gray-500 font-medium mb-2 text-xs">{item.description}</p>
-                    <span className="text-gray-400 font-medium mb-2 text-xs">
-                      {item.price}
-                    </span>
+                </svg>
+                <h3 className="text-lg font-semibold text-gray-700 mb-1">
+                  No Menus Available
+                </h3>
+                <p className="text-gray-500 text-center text-sm">
+                  This vendor hasn’t added any menus yet.
+                  <br />
+                  Please check back soon!
+                </p>
+              </div>
+            ) : (
+              <ul>
+                {menus.map((item) => (
+                  <div
+                    key={item.id}
+                    className="relative rounded-2xl p-2 mt-3 flex flex-row gap-4 items-center"
+                  >
+                    <img
+                      src={item.imageUrl || "/images/placeholder.jpg"}
+                      alt={item.name}
+                      className="w-1/3 h-30 object-cover rounded-lg"
+                      style={{
+                        boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+                      }}
+                    />
+                    <div className="flex flex-col text-base">
+                      <h5 className="text-gray-950 pt-1">{item.name}</h5>
+                      <p className="text-gray-500 font-medium text-xs">
+                        {item.description}
+                      </p>
+                      <span className="text-gray-500 font-medium mb-2 text-xs">
+                        {item.price}
+                      </span>
+                      <div className="flex gap-1">
+                        {" "}
+                        <Button
+                          onClick={() => setEditingItem(item)}
+                          className="w-24 bg-blue-500 hover:bg-blue-600 text-white"
+                        >
+                          Update
+                        </Button>
+                        <Button
+                          className="w-24 bg-red-500 hover:bg-red-600 text-white"
+                          onClick={() => setDeletingItem(item)}
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </ul>
+            )}
           </section>
 
           {/* 5. Photo Gallery */}
@@ -279,7 +324,10 @@ export default function VendorDetailPage() {
 
         {/* 7. Booking Section (Sidebar or Fixed Bottom for Mobile) */}
         <aside className="md:sticky md:top-28">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:mt-0 mt-8">
+          <div
+            className="bg-white rounded-2xl border border-gray-200 p-6 md:mt-0 mt-8"
+            style={{ boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px" }}
+          >
             <h2 className="text-lg font-semibold text-gray-900 mb-3">
               Reserve This Caterer
             </h2>
@@ -322,68 +370,20 @@ export default function VendorDetailPage() {
                   ))}
                 </select>
               </label>
-              <button
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  toast.success("Reservation request sent!");
+                }}
                 type="submit"
-                className="w-full bg-gray-900 text-white py-2 rounded-lg font-semibold hover:bg-gray-800 transition"
+                className="w-full"
               >
                 Proceed to Reservation
-              </button>
+              </Button>
             </form>
           </div>
         </aside>
       </main>
-
-      <h1 className="text-4xl font-bold mb-6">{vendor.name}</h1>
-      <img
-        src={vendor.imageUrl || "/images/placeholder.jpg"}
-        alt={vendor.name}
-        className="w-64 h-64 object-cover rounded-lg mb-4"
-      />
-      <p className="mb-2">{vendor.description}</p>
-      <p>
-        <strong>Address:</strong> {vendor.address}
-      </p>
-      <p>
-        <strong>Phone:</strong> {vendor.phonenumber}
-      </p>
-      <p>
-        <strong>Email:</strong> {vendor.email}
-      </p>
-      {/* <p>
-        <strong>Status:</strong> {vendor.isActive ? "Active" : "Inactive"}
-      </p> */}
-
-      <MenuForm vendorId={vendor.id} onSubmit={handleCreate} />
-
-      <h2 className="text-2xl font-bold mt-8 mb-4">Menus</h2>
-
-      {loading ? (
-        <p>Loading Menus...</p>
-      ) : error ? (
-        <p className="text-red-600">Error: {error}</p>
-      ) : menus.length === 0 ? (
-        <p>No menus for this vendor.</p>
-      ) : (
-        <ul>
-          {menus.map((item) => (
-            <li key={item.id} className="flex items-center gap-2">
-              <strong>{item.name}</strong> - {item.description}
-              <button
-                className="ml-2 text-blue-600 underline"
-                onClick={() => setEditingItem(item)}
-              >
-                Update
-              </button>
-              <button
-                className="ml-2 text-red-600 underline"
-                onClick={() => setDeletingItem(item)}
-              >
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
 
       {editingItem && (
         <MenuForm

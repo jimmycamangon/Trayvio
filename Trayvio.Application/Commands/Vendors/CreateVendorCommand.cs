@@ -13,4 +13,5 @@ public class CreateVendorCommand : IRequest<VendorDto>
     public int OwnerId { get; set; }
     public bool IsApproved { get; set; } = false;
     public decimal? CommissionRate { get; set; } = null;
+    public string ImageUrl { get; set; } = string.Empty;
 }

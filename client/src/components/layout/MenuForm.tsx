@@ -268,7 +268,7 @@ const dialogOpen = typeof open === "boolean" ? open : internalDialogOpen;
     <Dialog open={dialogOpen} onOpenChange={handleDialogOpenChange}>
       {!isEdit && (
         <DialogTrigger asChild>
-          <Button className="btn btn-primary">{triggerLabel}</Button>
+          <Button className="btn btn-primary text-lg">{triggerLabel}</Button>
         </DialogTrigger>
       )}
       <DialogContent>
