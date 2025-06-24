@@ -4,7 +4,7 @@ namespace Trayvio.Domain.Interfaces;
 
 public interface IUserRepository : IGenericRepository<User>
 {
-    // Task<User> GetUserByEmailAsync(string email);
+    Task<User> GetUserByEmailAsync(string email);
     // Task<User> GetUserByIdAsync(int userId);
     // Task<IReadOnlyList<User>> GetUsersByRoleAsync(string role);
     // Task<IReadOnlyList<User>> GetActiveUsersAsync();
