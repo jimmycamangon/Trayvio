@@ -185,3 +185,4 @@ D:\JimFiles\React\Trayvio\Trayvio.API\obj\Debug\net9.0\Trayvio.API.pdb
 D:\JimFiles\React\Trayvio\Trayvio.API\obj\Debug\net9.0\Trayvio.API.genruntimeconfig.cache
 D:\JimFiles\React\Trayvio\Trayvio.API\obj\Debug\net9.0\ref\Trayvio.API.dll
 D:\JimFiles\React\Trayvio\Trayvio.API\obj\Debug\net9.0\Trayvio.API.sourcelink.json
+D:\JimFiles\React\Trayvio\Trayvio.API\bin\Debug\net9.0\BCrypt.Net-Next.dll

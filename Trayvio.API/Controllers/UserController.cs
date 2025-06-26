@@ -56,4 +56,34 @@ public class UserController : ControllerBase
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
+
+    [HttpPost("signup")]
+    public async Task<ActionResult<UserDto>> Signup(SignupCommand command)
+    {
+        try
+        {
+            var result = await _mediator.Send(command);
+            return CreatedAtAction(nameof(GetUsers), new { id = result.Id }, result);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception (not implemented here)
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+    [HttpPost("login")]
+    public async Task<ActionResult<string>> Login(LoginCommand command)
+    {
+        try
+        {
+            var token = await _mediator.Send(command);
+            return Ok(token);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception (not implemented here)
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
 }

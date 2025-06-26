@@ -16,6 +16,8 @@ public class MappingProfile : Profile
         CreateMap<CreateVendorCommand, Vendor>();
         CreateMap<CreateUserCommand, User>();
         CreateMap<CreateMenuCommand, Menu>();
+        CreateMap<SignupCommand, User>();
+        CreateMap<LoginCommand, User>();
 
         CreateMap<FoodItem, FoodItemDto>();
         CreateMap<Vendor, VendorDto>();
@@ -25,6 +27,8 @@ public class MappingProfile : Profile
         CreateMap<Reservation, ReservationDto>();
         CreateMap<Menu, MenuDto>();
         CreateMap<MenuFoodItem, MenuFoodItemDto>();
+        CreateMap<SignupDto, User>();
+        CreateMap<LoginDto, User>();
         // // MappingProfile.cs
         // CreateMap<FoodItem, FoodItemDto>()
         //     .ForMember(

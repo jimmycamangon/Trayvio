@@ -5,6 +5,7 @@ using Trayvio.Application.Mappings;
 using Trayvio.Domain.Interfaces;
 using Trayvio.Infrastructure.Data;
 using Trayvio.Infrastructure.Repositories;
+using Trayvio.Infrastructure.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,10 @@ builder.Services.AddScoped<IFoodItemRepository, FoodItemRepository>();
 builder.Services.AddScoped<IVendorRepository, VendorRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMenuRepository, MenuRepository>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+// builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+// builder.Services.AddScoped<IJwtService, JwtService>();
 
 // Application Layer
 builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
@@ -31,6 +36,7 @@ builder.Services.AddMediatR(typeof(GetVendorByIdQueryHandler).Assembly);
 builder.Services.AddMediatR(typeof(GetFoodItemsByVendorIdQueryHandler).Assembly);
 builder.Services.AddMediatR(typeof(GetMenusQueryHandler).Assembly);
 builder.Services.AddMediatR(typeof(GetMenusByVendorIdQueryHandler).Assembly);
+builder.Services.AddMediatR(typeof(SignupCommandHandler).Assembly);
 
 // CORS Configuration
 builder.Services.AddCors(options =>
