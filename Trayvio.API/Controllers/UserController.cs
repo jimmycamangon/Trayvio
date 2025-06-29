@@ -73,12 +73,17 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<string>> Login(LoginCommand command)
+    public async Task<ActionResult<string>> Login([FromBody] LoginCommand command)
     {
         try
         {
             var token = await _mediator.Send(command);
             return Ok(token);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            // Return 401 for invalid credentials
+            return Unauthorized(new { message = ex.Message });
         }
         catch (Exception ex)
         {

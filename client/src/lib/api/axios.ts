@@ -186,7 +186,34 @@ export const GetVendorById = async (id: number) => {
 //   }
 // };
 
+export const Login = async (email: string, password: string) => {
+  try {
+    const response = await axiosInstance.post('/User/login', { email, password });
+    return response.data;
+  } catch (error: any) {
+    console.error('Login failed:', error);
+    // Extract server error message if available
+    const errorMessage = error.response?.data?.message ||
+      error.response?.data?.error ||
+      "Invalid email or password";
+    throw new Error(errorMessage);
+  }
+}
 
+export const Signup = async (data: any) => {
+  try {
+    const response = await axiosInstance.post('/User/signup', data);
+    return response.data;
+  }
+catch (error: any) {
+    console.error('Signup failed:', error);
+    // Extract server error message if available
+    const errorMessage = error.response?.data?.message ||
+      error.response?.data?.error ||
+      "Please check your input";
+    throw new Error(errorMessage);
+  }
+}
 
 // Menu
 export const GetMenus = async () => {

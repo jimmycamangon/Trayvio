@@ -16,7 +16,6 @@ import {
   FormField,
   FormLabel,
   FormControl,
-  FormMessage,
 } from "@/components/ui/form";
 
 export default function FoodItemForm({
@@ -41,7 +40,7 @@ export default function FoodItemForm({
       name: "",
       description: "",
       price: 0,
-      imageUrl: "", 
+      imageUrl: "",
       selectedFile: null as File | null,
       ...initialValues,
     },
@@ -122,7 +121,7 @@ export default function FoodItemForm({
       setLoading(false);
     }
   };
-const dialogOpen = typeof open === "boolean" ? open : internalDialogOpen;
+  const dialogOpen = typeof open === "boolean" ? open : internalDialogOpen;
   const handleDialogOpenChange = (value: boolean) => {
     if (setOpen) setOpen(value);
     else setInternalDialogOpen(value);
@@ -163,13 +162,19 @@ const dialogOpen = typeof open === "boolean" ? open : internalDialogOpen;
           name="name"
           control={methods.control}
           rules={{ required: "Name is required" }}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input
+                  {...field}
+                  className={
+                    fieldState.error
+                      ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                      : ""
+                  }
+                />
               </FormControl>
-              <FormMessage />
             </>
           )}
         />
@@ -177,13 +182,19 @@ const dialogOpen = typeof open === "boolean" ? open : internalDialogOpen;
           name="description"
           control={methods.control}
           rules={{ required: "Description is required" }}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input
+                  {...field}
+                  className={
+                    fieldState.error
+                      ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                      : ""
+                  }
+                />
               </FormControl>
-              <FormMessage />
             </>
           )}
         />
@@ -191,17 +202,23 @@ const dialogOpen = typeof open === "boolean" ? open : internalDialogOpen;
           name="price"
           control={methods.control}
           rules={{ required: "Price is required" }}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <>
               <FormLabel>Price</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input
+                  {...field}
+                  className={
+                    fieldState.error
+                      ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                      : ""
+                  }
+                />
               </FormControl>
-              <FormMessage />
             </>
           )}
         />
-       <FormField
+        <FormField
           name="imageUrl"
           control={methods.control}
           rules={{
@@ -213,7 +230,7 @@ const dialogOpen = typeof open === "boolean" ? open : internalDialogOpen;
               return true;
             },
           }}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <>
               <FormLabel>Food Image</FormLabel>
               <FormControl>
@@ -234,12 +251,16 @@ const dialogOpen = typeof open === "boolean" ? open : internalDialogOpen;
                     accept="image/*"
                     onChange={handleFileChange}
                     disabled={uploading}
+                    className={
+                      fieldState.error
+                        ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                        : ""
+                    }
                   />
                   {/* Hidden input to store the actual URL */}
                   <input type="hidden" {...field} />
                 </div>
               </FormControl>
-              <FormMessage />
             </>
           )}
         />
@@ -273,9 +294,7 @@ const dialogOpen = typeof open === "boolean" ? open : internalDialogOpen;
       )}
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            {isEdit ? "Update Menu" : "Create Menu"}
-          </DialogTitle>
+          <DialogTitle>{isEdit ? "Update Menu" : "Create Menu"}</DialogTitle>
         </DialogHeader>
         <FormProvider {...methods}>
           <FormContent />
