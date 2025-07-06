@@ -12,7 +12,11 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, string>
 
     private readonly IPasswordHasher _hasher;
 
-    public LoginCommandHandler(IUserRepository repo, IMapper mapper, IPasswordHasher hasher)
+    public LoginCommandHandler(
+        IUserRepository repo,
+        IMapper mapper,
+        IPasswordHasher hasher
+    )
     {
         _repo = repo;
         _mapper = mapper;
@@ -22,12 +26,17 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, string>
     public async Task<string> Handle(LoginCommand command, CancellationToken cancellationToken)
     {
         var user = await _repo.GetUserByEmailAsync(command.Email);
-        if (user == null || !_hasher.Verify(user.PasswordHash, command.Password))
+        if (user == null)
         {
-            throw new UnauthorizedAccessException("Invalid email or password.");
+            throw new UnauthorizedAccessException("User not found");
         }
 
-        // Generate JWT token or return a success message
-        return "Login successful"; // Replace with actual token generation logic
+        var isPasswordValid = _hasher.Verify(user.PasswordHash, command.Password);
+        if (!isPasswordValid)
+        {
+            throw new UnauthorizedAccessException("Invalid password");
+        }
+
+        return user.Id.ToString();
     }
 }

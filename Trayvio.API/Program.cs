@@ -1,6 +1,8 @@
-using System.Reflection;
+﻿using System.Reflection;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using Trayvio.Application.Mappings;
 using Trayvio.Domain.Interfaces;
 using Trayvio.Infrastructure.Data;
@@ -9,55 +11,93 @@ using Trayvio.Infrastructure.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// API Layer
+// Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-// Infrastructure Layer
+// Configure Swagger
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Trayvio API", Version = "v1" });
+    c.AddSecurityDefinition("cookieAuth", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.ApiKey,
+        In = ParameterLocation.Cookie,
+        Name = ".AspNetCore.Cookies",
+        Description = "Cookie-based authentication"
+    });
+});
 
+// Database Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Repositories
 builder.Services.AddScoped<IFoodItemRepository, FoodItemRepository>();
 builder.Services.AddScoped<IVendorRepository, VendorRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMenuRepository, MenuRepository>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
-// builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
-// builder.Services.AddScoped<IJwtService, JwtService>();
-
 // Application Layer
 builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
-
 builder.Services.AddMediatR(typeof(GetFoodItemsQueryHandler).Assembly);
-builder.Services.AddMediatR(typeof(GetVendorByIdQueryHandler).Assembly);
-builder.Services.AddMediatR(typeof(GetFoodItemsByVendorIdQueryHandler).Assembly);
-builder.Services.AddMediatR(typeof(GetMenusQueryHandler).Assembly);
-builder.Services.AddMediatR(typeof(GetMenusByVendorIdQueryHandler).Assembly);
-builder.Services.AddMediatR(typeof(SignupCommandHandler).Assembly);
 
-// CORS Configuration
+// CORS Configuration (Updated)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(
-        "AllowReactApp",
-        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
-    );
+    options.AddPolicy("ReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000") 
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
 });
+
+// Authentication & Session
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(2);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.Cookie.SameSite = SameSiteMode.None; // For development
+});
+
+builder.Services.AddAuthentication("Cookies")
+    .AddCookie("Cookies", options =>
+    {
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // For dev
+        options.ExpireTimeSpan = TimeSpan.FromHours(2);
+        options.SlidingExpiration = true;
+    });
 
 var app = builder.Build();
 
-// Configure middleware pipeline
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Trayvio API v1");
+        c.ConfigObject.AdditionalItems["requestCookies"] = true;
+    });
 }
 
 app.UseHttpsRedirection();
-app.UseCors("AllowReactApp");
-app.MapControllers();
 
+// Critical Middleware Order
+app.UseRouting();
+app.UseCors("ReactApp"); 
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseSession();
+
+// Test endpoint
+app.MapGet("/api/health", () => Results.Ok(new { status = "Healthy", timestamp = DateTime.UtcNow }));
+
+app.MapControllers();
 app.Run();

@@ -1,139 +1,162 @@
-import axios from 'axios';
+import axios, {
+  AxiosError,
+  AxiosRequestConfig,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+  AxiosRequestHeaders
+} from 'axios';
+import { CurrentUserResponse, User } from '@/types/users';
 
-// Default localhost URL
-const defaultLocalURL = 'http://localhost:5222/api';
-
-// Try to detect if we're running on a local network IP
-const getLocalNetworkUrl = () => {
-  try {
-    // This will only work in browser environment
-    if (typeof window !== 'undefined') {
-      const hostname = window.location.hostname;
-      if (hostname !== 'localhost' && hostname.match(/^192\.168\.|^10\.|^172\.(1[6-9]|2[0-9]|3[0-1])\./)) {
-        return `http://${hostname}:5222/api`;
-      }
-    }
-  } catch (e) {
-    console.warn('Could not determine local network URL', e);
-  }
-  return null;
-};
-
-
-// Priority: 1. ENV variable 2. Local network IP 3. Default localhost
-const baseURL = process.env.NEXT_PUBLIC_API_URL || getLocalNetworkUrl() || defaultLocalURL;
-
-if (!process.env.NEXT_PUBLIC_API_URL) {
-  console.warn(`API URL not found in environment variables. Using ${baseURL}`);
-}
+// Configuration
+const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5222/api';
+console.log('API Base URL:', baseURL);
 
 export const axiosInstance = axios.create({
   baseURL,
+  withCredentials: true,
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  },
-  timeout: 10000, // 10 seconds`
+    'Accept': 'application/json'
+  } as AxiosRequestHeaders
 });
 
-// Request interceptor for API calls
+// Request interceptor
 axiosInstance.interceptors.request.use(
-  (config) => {
-    // You can add auth headers here later if needed
+  (config: InternalAxiosRequestConfig) => {
+    console.debug(`Requesting: ${config.method?.toUpperCase()} ${config.url}`);
     return config;
   },
-  (error) => {
+  (error: unknown) => {
+    console.error('Request error:', error);
     return Promise.reject(error);
   }
 );
 
-// Enhanced response interceptor with more detailed error handling
+// Response interceptor
 axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    console.error('API Error:', error);
+  (response: AxiosResponse) => {
+    console.debug(`Response from: ${response.config.url}`, response.data);
+    return response;
+  },
+  (error: unknown) => {
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      const errorInfo = {
+        url: axiosError.config?.url || 'unknown',
+        method: axiosError.config?.method || 'unknown',
+        code: axiosError.code || 'no-code',
+        status: axiosError.response?.status || 'no-status',
+        message: axiosError.message,
+        responseData: axiosError.response?.data
+      };
 
-    // Enhanced timeout message
-    if (error.code === 'ECONNABORTED') {
-      throw new Error(`Request timeout - the server at ${baseURL} didn't respond in time`);
+      console.error('API Error:', JSON.stringify(errorInfo, null, 2));
+
+      if (axiosError.code === 'ECONNABORTED') {
+        return Promise.reject(new Error(`Request timeout to ${baseURL}`));
+      }
+
+      if (!axiosError.response) {
+        const message = [
+          `Cannot connect to API at ${baseURL}`,
+          'Possible causes:',
+          '1. Backend service not running',
+          '2. CORS misconfiguration',
+          '3. Network firewall blocking',
+          `4. Wrong API URL (current: ${baseURL})`
+        ].join('\n');
+        return Promise.reject(new Error(message));
+      }
+
+      switch (axiosError.response.status) {
+        case 401:
+          return Promise.reject(new Error('Session expired - please login again'));
+        case 403:
+          return Promise.reject(new Error('You don\'t have permission for this action'));
+        case 404:
+          if (axiosError.config?.url?.includes('/fooditem/vendor/')) {
+            return Promise.reject(axiosError);
+          }
+          return Promise.reject(new Error('Requested resource not found'));
+        default:
+          const responseData = axiosError.response.data as any;
+          const serverMessage = responseData?.message || 
+                              responseData?.error ||
+                              `Request failed with status ${axiosError.response.status}`;
+          return Promise.reject(new Error(serverMessage));
+      }
     }
 
-    // Network errors (server not running, CORS issues, etc.)
-    if (!error.response) {
-      throw new Error(
-        `Network error - please check if:
-        1. The API server is running
-        2. You're using the correct URL (${baseURL})
-        3. There are no CORS issues (if accessing from different origin)`
-      );
-    }
-
-    // Handle specific HTTP errors with more context
-    switch (error.response.status) {
-      case 401:
-        throw new Error('Unauthorized - please login');
-      case 403:
-        throw new Error('Forbidden - you don\'t have permission');
-      case 404:
-        // Allow 404 for food items by vendor, let the function handle it
-        if (error.config.url?.includes('/fooditem/vendor/')) {
-          return Promise.reject(error); // Let the function handle it
-        }
-        throw new Error(`Resource not found at ${error.config.url}`);
-      case 400:
-        throw new Error(`Bad request: ${error.response.data?.message || 'please check your input'}`);
-      case 500:
-        throw new Error(`Server error: ${error.response.data?.message || 'please try again later'}`);
-      default:
-        throw new Error(`Request failed with status ${error.response.status}`);
-    }
+    const err = error as Error;
+    console.error('Non-Axios Error:', err);
+    return Promise.reject(err);
   }
 );
 
-// API endpoints
-
-// Food Item
-export const GetFoodItems = async () => {
-  try {
-    const response = await axiosInstance.get('/fooditem');
-    return response.data;
-  } catch (error) {
-    console.error('Failed to fetch products:', error);
-    throw error;
-  }
+// Connection check
+interface ConnectionStatus {
+  connected: boolean;
+  url: string;
+  data?: any;
+  error?: string;
 }
 
-export const GetFoodItemsByVendorId = async (id: number) => {
+export const checkConnection = async (): Promise<ConnectionStatus> => {
   try {
-    const response = await axiosInstance.get(`/fooditem/vendor/${id}`);
+    const response = await axiosInstance.get('/health');
+    return { 
+      connected: true,
+      url: baseURL,
+      data: response.data 
+    };
+  } catch (error) {
+    return {
+      connected: false,
+      url: baseURL,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+};
+
+// User endpoints
+export const Login = async (email: string, password: string): Promise<any> => {
+  const response = await axiosInstance.post('/User/login', { email, password });
+  return response.data;
+};
+
+export const GetCurrentUser = async (): Promise<CurrentUserResponse> => {
+  try {
+    const response = await axiosInstance.get('/User/current');
     return response.data;
   } catch (error: any) {
-    if (error.response && error.response.status === 404) {
-      // Return empty array if no food items found
-      return [];
+    if (error.response?.status === 404) {
+      return {
+        success: false,
+        message: 'No active user session',
+        user: null
+      };
     }
-    console.error(`Failed to fetch food items for vendor ${id}:`, error);
-    throw error;
+    
+    console.error('Error fetching current user:', error);
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Failed to fetch user',
+      user: null
+    };
   }
-}
+};
 
-export const CreateFoodItem = async (data: any) => {
-  try {
-    const response = await axiosInstance.post('/fooditem', data);
-    return response.data;
-  } catch (error) {
-    console.error('Failed to create food item:', error);
-    throw error;
-  }
-}
+export const Logout = async (): Promise<void> => {
+  await axiosInstance.post('/User/logout');
+};
 
-export const UpdateFoodItem = async (id: number, data: any) => {
+export const Signup = async (data: any) => {
   try {
-    const response = await axiosInstance.put(`/fooditem/${id}`, data);
+    const response = await axiosInstance.post('/User/signup', data);
     return response.data;
   } catch (error: any) {
-    console.error(`Failed to update food item ${id}:`, error);
-    // Extract server error message if available
+    console.error('Signup failed:', error);
     const errorMessage = error.response?.data?.message ||
       error.response?.data?.error ||
       "Please check your input";
@@ -141,81 +164,28 @@ export const UpdateFoodItem = async (id: number, data: any) => {
   }
 };
 
-export const DeleteFoodItem = async (id: number) => {
-  try {
-    const response = await axiosInstance.delete(`/fooditem/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error(`Failed to delete product ${id}:`, error);
-    throw error;
-  }
-}
-
-
-
-// Vendor
+// Vendor endpoints
 export const GetVendors = async () => {
   try {
     const response = await axiosInstance.get('/vendor');
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch products:', error);
+    console.error('Failed to fetch vendors:', error);
     throw error;
   }
-}
+};
 
 export const GetVendorById = async (id: number) => {
   try {
     const response = await axiosInstance.get(`/vendor/${id}`);
     return response.data;
   } catch (error) {
-    console.error(`Failed to fetch product ${id}:`, error);
+    console.error(`Failed to fetch vendor ${id}:`, error);
     throw error;
   }
-}
+};
 
-
-// // User
-// export const GetUsers = async () => {
-//   try {
-//     const response = await axiosInstance.get('/user'); // or '/users' depending on your route
-//     return response.data;
-//   } catch (error) {
-//     console.error('Failed to fetch users:', error);
-//     throw error;
-//   }
-// };
-
-export const Login = async (email: string, password: string) => {
-  try {
-    const response = await axiosInstance.post('/User/login', { email, password });
-    return response.data;
-  } catch (error: any) {
-    console.error('Login failed:', error);
-    // Extract server error message if available
-    const errorMessage = error.response?.data?.message ||
-      error.response?.data?.error ||
-      "Invalid email or password";
-    throw new Error(errorMessage);
-  }
-}
-
-export const Signup = async (data: any) => {
-  try {
-    const response = await axiosInstance.post('/User/signup', data);
-    return response.data;
-  }
-catch (error: any) {
-    console.error('Signup failed:', error);
-    // Extract server error message if available
-    const errorMessage = error.response?.data?.message ||
-      error.response?.data?.error ||
-      "Please check your input";
-    throw new Error(errorMessage);
-  }
-}
-
-// Menu
+// Menu endpoints
 export const GetMenus = async () => {
   try {
     const response = await axiosInstance.get('/menu');
@@ -224,7 +194,7 @@ export const GetMenus = async () => {
     console.error('Failed to fetch menus:', error);
     throw error;
   }
-}
+};
 
 export const GetMenusByVendor = async (id: number) => {
   try {
@@ -232,7 +202,6 @@ export const GetMenusByVendor = async (id: number) => {
     return response.data;
   } catch (error: any) {
     if (error.response && error.response.status === 404) {
-      // No menu items found for this vendor, return empty array
       return [];
     }
     console.error(`Failed to fetch menu items for vendor ${id}:`, error);
@@ -248,7 +217,7 @@ export const CreateMenu = async (data: any) => {
     console.error('Failed to create menu:', error);
     throw error;
   }
-}
+};
 
 export const UpdateMenu = async (id: number, data: any) => {
   try {
@@ -256,7 +225,6 @@ export const UpdateMenu = async (id: number, data: any) => {
     return response.data;
   } catch (error: any) {
     console.error(`Failed to update menu ${id}:`, error);
-    // Extract server error message if available
     const errorMessage = error.response?.data?.message ||
       error.response?.data?.error ||
       "Please check your input";
@@ -272,27 +240,4 @@ export const DeleteMenu = async (id: number) => {
     console.error(`Failed to delete menu ${id}:`, error);
     throw error;
   }
-}
-
-
-
-
-
-// Utility function to help debug connection issues
-export const checkApiConnection = async () => {
-  try {
-    const response = await axiosInstance.get('/health');
-    return {
-      connected: true,
-      url: baseURL,
-      status: response.status,
-      data: response.data
-    };
-  } catch (error) {
-    return {
-      connected: false,
-      url: baseURL,
-      error: error instanceof Error ? error.message : 'Unknown error'
-    };
-  }
-}
+};

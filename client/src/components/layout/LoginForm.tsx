@@ -11,11 +11,12 @@ import {
   FormMessage,
   FormControl,
 } from "@/components/ui/form";
-import { Login } from "@/lib/api/axios";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 type LoginFormValues = {
   email: string;
@@ -30,7 +31,8 @@ export default function LoginForm({
   const form = useForm<LoginFormValues>({
     defaultValues: { email: "", password: "" },
   });
-
+  const { login } = useAuth();
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -38,19 +40,25 @@ export default function LoginForm({
     setError(null);
     setLoading(true);
     try {
-      const result = await Login(data.email, data.password);
+      const success = await login(data.email, data.password);
+      await login(data.email, data.password);
       toast.success("Login successful!");
-      if (onSubmit) onSubmit(result);
-      // Redirect or store token, etc.
+      
+      if (success) {
+        // Redirect to the home page after successful login
+        router.push("/");
+      } else {
+        setError("Login failed. Please check your credentials.");
+      }
+
     } catch (err: any) {
-      // Show the error message from the backend
-      setError(err.message); // This will be "Invalid email or password."
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  return (
+  return (  
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}

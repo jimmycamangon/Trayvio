@@ -9,3 +9,8 @@ export interface User {
     isActive: boolean;
 }
 
+export interface CurrentUserResponse {
+    success: boolean;
+    message: string;
+    user: Omit<User, 'passwordHash'> | null;
+}

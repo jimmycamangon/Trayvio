@@ -186,3 +186,9 @@ D:\JimFiles\React\Trayvio\Trayvio.API\obj\Debug\net9.0\Trayvio.API.genruntimecon
 D:\JimFiles\React\Trayvio\Trayvio.API\obj\Debug\net9.0\ref\Trayvio.API.dll
 D:\JimFiles\React\Trayvio\Trayvio.API\obj\Debug\net9.0\Trayvio.API.sourcelink.json
 D:\JimFiles\React\Trayvio\Trayvio.API\bin\Debug\net9.0\BCrypt.Net-Next.dll
+D:\JimFiles\React\Trayvio\Trayvio.API\bin\Debug\net9.0\Microsoft.Extensions.Configuration.dll
+D:\JimFiles\React\Trayvio\Trayvio.API\bin\Debug\net9.0\Microsoft.Extensions.Configuration.FileExtensions.dll
+D:\JimFiles\React\Trayvio\Trayvio.API\bin\Debug\net9.0\Microsoft.Extensions.Configuration.Json.dll
+D:\JimFiles\React\Trayvio\Trayvio.API\bin\Debug\net9.0\Microsoft.Extensions.FileProviders.Abstractions.dll
+D:\JimFiles\React\Trayvio\Trayvio.API\bin\Debug\net9.0\Microsoft.Extensions.FileProviders.Physical.dll
+D:\JimFiles\React\Trayvio\Trayvio.API\bin\Debug\net9.0\Microsoft.Extensions.FileSystemGlobbing.dll
