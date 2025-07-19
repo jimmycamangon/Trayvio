@@ -42,15 +42,14 @@ export default function LoginForm({
     try {
       const success = await login(data.email, data.password);
       await login(data.email, data.password);
-      toast.success("Login successful!");
-      
+
       if (success) {
+        toast.success("Login successful!");
         // Redirect to the home page after successful login
         router.push("/");
       } else {
         setError("Login failed. Please check your credentials.");
       }
-
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -58,7 +57,7 @@ export default function LoginForm({
     }
   };
 
-  return (  
+  return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}

@@ -2,10 +2,11 @@
 import { Vendor } from "@/types/vendor";
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import Loading from "@/components/layout/Loading";
+import {Skeleton} from "@/components/ui/skeleton";
 import {
   GetVendorById,
-  GetFoodItemsByVendorId,
-  CreateFoodItem,
   UpdateMenu,
   DeleteMenu,
   GetMenusByVendor,
@@ -67,6 +68,8 @@ export default function VendorDetailPage() {
   const [deletingItem, setDeletingItem] = useState<Menu | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const { user, isLoading } = useAuth();
 
   useEffect(() => {
     if (id) {
@@ -142,9 +145,10 @@ export default function VendorDetailPage() {
       console.error(error);
     }
   };
-
+  if (isLoading) {
+    return <Loading />;
+  }
   if (!vendor) return <div />;
-
   return (
     <div className="bg-gray-50 min-h-screen pb-32">
       {/* 1. Banner / Cover Image */}
@@ -209,7 +213,18 @@ export default function VendorDetailPage() {
               Menus <MenuForm vendorId={vendor.id} onSubmit={handleCreate} />
             </h2>
             {loading ? (
-              <p>Loading Menus...</p>
+              <div className="block md:hidden mx-auto max-w-[400px]">
+                <div className="bg-white p-4 space-y-3 rounded-lg animate-pulse">
+                  <Skeleton className="h-60 w-full rounded-lg" />
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <Skeleton className="h-5 w-3/4" />
+                      <Skeleton className="h-5 w-16" />
+                    </div>
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                </div>
+              </div>
             ) : error ? (
               <p className="text-red-600">Error: {error}</p>
             ) : menus.length === 0 ? (
