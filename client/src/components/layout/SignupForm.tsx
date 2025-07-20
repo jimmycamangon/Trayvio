@@ -57,7 +57,6 @@ export default function SignupForm({
       toast.success("Signup successful!");
       router.push("/login");
       if (onSubmit) onSubmit(result);
-      // Optionally redirect to login or home
     } catch (err: any) {
       setError(err.message);
     } finally {

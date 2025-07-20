@@ -20,8 +20,6 @@ export async function POST(request: Request) {
     // Define the upload directory (relative to project root)
     const uploadDir = path.join(process.cwd(), 'public', 'images', 'fooditems');
     
-    // Ensure the directory exists (you might want to do this once at startup)
-    // For now, make sure the directory exists manually
     
     // Read the file buffer
     const bytes = await file.arrayBuffer();

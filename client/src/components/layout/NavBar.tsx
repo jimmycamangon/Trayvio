@@ -17,10 +17,6 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout, isLoading } = useAuth();
-  const hideNavbarRoutes = ["/login", "/signup", "/forgot-password"];
-
-  // Hide navbar during initial auth loading or on specific routes
-  if (hideNavbarRoutes.includes(pathname) || isLoading) return null;
 
   const handleLogout = async () => {
     try {
@@ -63,7 +59,7 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <Link href="/signup?vendor=true">
+            <Link href="/cater/login">
               <Button
                 variant="outline"
                 className="border border-primary text-primary font-semibold rounded-full px-5 py-2 hover:bg-primary hover:text-white transition"

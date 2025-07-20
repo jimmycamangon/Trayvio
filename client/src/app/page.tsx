@@ -8,6 +8,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/context/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Loading from "@/components/layout/Loading";
+import Footer from "@/components/layout/Footer";
+import Navbar from "@/components/layout/NavBar";
 
 import {
   Carousel,
@@ -50,6 +52,8 @@ export default function Home() {
 
   return (
     <ProtectedRoute>
+      <Navbar />
+      {/* Main Layout */}
       // Home Section
       <main className="min-h-screen">
         <section className="min-h-screen flex-col items-center justify-between p-2 m-12 md:p-8 lg:p-12">
@@ -186,6 +190,7 @@ export default function Home() {
             )}
           </div>
         </section>
+        <Footer />
       </main>
     </ProtectedRoute>
   );
