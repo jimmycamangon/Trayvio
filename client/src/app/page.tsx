@@ -29,7 +29,9 @@ export default function Home() {
   useEffect(() => {
     const fetchVendors = async () => {
       try {
+        console.log("Fetching vendors...");
         const vendors = await GetVendors();
+        console.log("Vendors fetched:", vendors);
         setVendor(vendors);
       } catch (error) {
         console.error("Failed to fetch vendors:", error);
@@ -46,6 +48,8 @@ export default function Home() {
     fetchVendors();
   }, []);
 
+  console.log("Page render state:", { isLoading, loading, error, vendorsCount: vendors.length });
+  
   if (isLoading) {
     return <Loading />;
   }
@@ -55,7 +59,7 @@ export default function Home() {
       <Navbar />
       {/* Main Layout */}
       // Home Section
-      <main className="min-h-screen">
+      <main className="min-h-screen bg-gray-50">
         <section className="min-h-screen flex-col items-center justify-between p-2 m-12 md:p-8 lg:p-12">
           <div className="pt-6">
             {/* <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center md:text-left mt-6 mb-6">
@@ -164,12 +168,12 @@ export default function Home() {
               </div>
             ) : (
               <Carousel
-                opts={{
-                  align: "start",
-                  dragFree: false, // Allows partial scrolling
-                }}
-                className="w-full relative"
-              >
+                  opts={{
+                    align: "start",
+                    dragFree: false, // Allows partial scrolling
+                  }}
+                  className="w-full relative"
+                >
                 <CarouselContent className="flex gap-2 md:gap-4">
                   {vendors.map((item) => (
                     <CarouselItem

@@ -49,7 +49,7 @@ export default function CaterCard({ vendor }: CaterCardProps) {
 
   return vendor.owner?.isActive ? (
     <Link
-      href={`/cater/${vendor.id}`}
+      href={`/view/${vendor.id}`}
       target="_blank"
       rel="noopener noreferrer"
     >

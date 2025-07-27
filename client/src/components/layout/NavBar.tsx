@@ -98,7 +98,7 @@ export default function Navbar() {
               </>
             )}
             <DropdownMenuItem asChild>
-              <Link href="/signup?vendor=true" className="w-full">
+              <Link href="/cater/login" className="w-full">
                 Become a vendor
               </Link>
             </DropdownMenuItem>

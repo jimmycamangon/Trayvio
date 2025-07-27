@@ -1,100 +1,390 @@
 "use client";
 import { useAuth } from "@/context/AuthContext";
+import { useState } from "react";
 import Loading from "@/components/layout/Loading";
-import { Home, Calendar, Utensils, DollarSign, Star, Users } from "lucide-react";
-// import StatCard from "@/components/cater/StatCard";
-// import RecentBookings from "@/components/cater/RecentBookings";
+import { ReservationsTable } from "@/components/cater/ReservationsTable";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+import { Calendar, Utensils, DollarSign, Star, MessageSquare, Edit } from "lucide-react";
 
 export default function CaterDashboardPage() {
   const { user, isLoading } = useAuth();
+  const [priorityPage, setPriorityPage] = useState(1);
+  const itemsPerPage = 3;
 
   if (isLoading || !user) {
     return <Loading />;
   }
 
+
   // Sample data - replace with real API calls
   const stats = [
-    { title: "Upcoming Events", value: "12", icon: <Calendar className="h-5 w-5" />, change: "+20%" },
-    { title: "Monthly Revenue", value: "$3,850", icon: <DollarSign className="h-5 w-5" />, change: "+15%" },
-    { title: "Menu Views", value: "324", icon: <Utensils className="h-5 w-5" />, change: "-5%" },
-    { title: "Customer Rating", value: "4.8", icon: <Star className="h-5 w-5" />, suffix: "★" },
+    { title: "Upcoming Reservations", value: "5", icon: <Calendar className="h-5 w-5" /> },
+    { title: "Pending Requests", value: "3", icon: <MessageSquare className="h-5 w-5" /> },
+    { title: "Avg. Rating", value: "4.8", icon: <Star className="h-5 w-5" />, suffix: "★" },
+    { title: "Monthly Revenue", value: "$3,850", icon: <DollarSign className="h-5 w-5" /> },
   ];
 
-  const recentBookings = [
-    { id: 1, eventName: "Corporate Lunch", date: "May 15, 2023", guests: 45, status: "Confirmed" },
-    { id: 2, eventName: "Wedding Reception", date: "May 20, 2023", guests: 120, status: "Pending" },
-    { id: 3, eventName: "Birthday Party", date: "May 22, 2023", guests: 30, status: "Completed" },
+  // In your page.tsx
+  const recentReservations = [
+    {
+      id: 1,
+      eventName: "Corporate Lunch",
+      date: "2023-05-15",
+      guests: 45,
+      menu: "Premium Package",
+      status: "confirmed" as const // Explicitly type as const
+    },
+    {
+      id: 2,
+      eventName: "Wedding Reception",
+      date: "2023-05-20",
+      guests: 120,
+      menu: "Vegan Buffet",
+      status: "modification_requested" as const // Explicitly type as const
+    },
+    {
+      id: 3,
+      eventName: "Wedding Reception",
+      date: "2023-05-20",
+      guests: 120,
+      menu: "Vegan Buffet",
+      status: "modification_requested" as const // Explicitly type as const
+    },
+    {
+      id: 4,
+      eventName: "Wedding Reception",
+      date: "2023-05-20",
+      guests: 120,
+      menu: "Vegan Buffet",
+      status: "modification_requested" as const // Explicitly type as const
+    },
+    {
+      id: 5,
+      eventName: "Wedding Reception",
+      date: "2023-05-20",
+      guests: 120,
+      menu: "Vegan Buffet",
+      status: "modification_requested" as const // Explicitly type as const
+    },
+    {
+      id: 6,
+      eventName: "Wedding Reception",
+      date: "2023-05-20",
+      guests: 120,
+      menu: "Vegan Buffet",
+      status: "modification_requested" as const // Explicitly type as const
+    },
+    {
+      id: 7,
+      eventName: "Wedding Reception",
+      date: "2023-05-20",
+      guests: 120,
+      menu: "Vegan Buffet",
+      status: "modification_requested" as const // Explicitly type as const
+    },
+    {
+      id: 8,
+      eventName: "Wedding Reception",
+      date: "2023-05-20",
+      guests: 120,
+      menu: "Vegan Buffet",
+      status: "modification_requested" as const // Explicitly type as const
+    },
+    {
+      id: 9,
+      eventName: "Wedding Reception",
+      date: "2023-05-20",
+      guests: 120,
+      menu: "Vegan Buffet",
+      status: "modification_requested" as const // Explicitly type as const
+    },
+    {
+      id: 10,
+      eventName: "Wedding Reception",
+      date: "2023-05-20",
+      guests: 120,
+      menu: "Vegan Buffet",
+      status: "modification_requested" as const // Explicitly type as const
+    },
+    {
+      id: 11,
+      eventName: "Wedding Reception",
+      date: "2023-05-20",
+      guests: 120,
+      menu: "Vegan Buffet",
+      status: "modification_requested" as const // Explicitly type as const
+    },
+    {
+      id: 12,
+      eventName: "Wedding Reception",
+      date: "2023-05-20",
+      guests: 120,
+      menu: "Vegan Buffet",
+      status: "modification_requested" as const // Explicitly type as const
+    },
+    {
+      id: 13,
+      eventName: "Corporate Lunch",
+      date: "2023-05-15",
+      guests: 45,
+      menu: "Premium Package",
+      status: "confirmed" as const // Explicitly type as const
+    },
+    {
+      id: 14,
+      eventName: "Corporate Lunch",
+      date: "2023-05-15",
+      guests: 45,
+      menu: "Premium Package",
+      status: "confirmed" as const // Explicitly type as const
+    },
+    {
+      id: 15,
+      eventName: "Corporate Lunch",
+      date: "2023-05-15",
+      guests: 45,
+      menu: "Premium Package",
+      status: "confirmed" as const // Explicitly type as const
+    },
+    {
+      id: 16,
+      eventName: "Corporate Lunch",
+      date: "2023-05-15",
+      guests: 45,
+      menu: "Premium Package",
+      status: "confirmed" as const // Explicitly type as const
+    },
+    {
+      id: 17,
+      eventName: "Corporate Lunch",
+      date: "2023-05-15",
+      guests: 45,
+      menu: "Premium Package",
+      status: "confirmed" as const // Explicitly type as const
+    },
+    {
+      id: 18,
+      eventName: "Corporate Lunch",
+      date: "2023-05-15",
+      guests: 45,
+      menu: "Premium Package",
+      status: "confirmed" as const // Explicitly type as const
+    },
+    {
+      id: 19,
+      eventName: "Corporate Lunch",
+      date: "2023-05-15",
+      guests: 45,
+      menu: "Premium Package",
+      status: "confirmed" as const // Explicitly type as const
+    },
+    {
+      id: 20,
+      eventName: "Corporate Lunch",
+      date: "2023-05-15",
+      guests: 45,
+      menu: "Premium Package",
+      status: "confirmed" as const // Explicitly type as const
+    },
+    {
+      id: 21,
+      eventName: "Corporate Lunch",
+      date: "2023-05-15",
+      guests: 45,
+      menu: "Premium Package",
+      status: "confirmed" as const // Explicitly type as const
+    },
+    {
+      id: 22,
+      eventName: "Corporate Lunch",
+      date: "2023-05-15",
+      guests: 45,
+      menu: "Premium Package",
+      status: "confirmed" as const // Explicitly type as const
+    },
+    {
+      id: 23,
+      eventName: "Corporate Lunch",
+      date: "2023-05-15",
+      guests: 45,
+      menu: "Premium Package",
+      status: "confirmed" as const // Explicitly type as const
+    },
+    {
+      id: 24,
+      eventName: "Corporate Lunch",
+      date: "2023-05-15",
+      guests: 45,
+      menu: "Premium Package",
+      status: "confirmed" as const // Explicitly type as const
+    },
+    {
+      id: 25,
+      eventName: "Corporate Lunch",
+      date: "2023-05-15",
+      guests: 45,
+      menu: "Premium Package",
+      status: "confirmed" as const // Explicitly type as const
+    },
+    {
+      id: 26,
+      eventName: "Corporate Lunch",
+      date: "2023-05-15",
+      guests: 45,
+      menu: "Premium Package",
+      status: "confirmed" as const // Explicitly type as const
+    },
+    {
+      id: 27,
+      eventName: "Corporate Lunch",
+      date: "2023-05-15",
+      guests: 45,
+      menu: "Premium Package",
+      status: "confirmed" as const // Explicitly type as const
+    },
+
   ];
+  const priorityReservations = recentReservations
+    .filter(r => r.status === "modification_requested");
+
+  const totalPriorityPages = Math.ceil(priorityReservations.length / itemsPerPage);
+  const paginatedPriorityReservations = priorityReservations.slice(
+    (priorityPage - 1) * itemsPerPage,
+    priorityPage * itemsPerPage
+  );
 
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
-        <h1 className="text-2xl font-bold">
-          Welcome back, <span className="text-purple-600">{ user.fullName}</span>
+      <div className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-lg shadow-sm border dark:border-gray-700">
+        <h1 className="text-2xl font-display font-semibold text-gray-900 dark:text-white">
+          Welcome back, <span className="text-purple-600 dark:text-purple-400">{user.fullName}</span>
         </h1>
-        <p className="text-gray-600 mt-1">
-          Here's what's happening with your business today
+        <p className="text-gray-600 dark:text-gray-300 mt-1 font-sans">
+          {recentReservations.length > 0
+            ? "Manage your upcoming reservations"
+            : "Add your menu to get started!"}
         </p>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* {stats.map((stat, index) => (
-          <StatCard
+      {/* Responsive Stats Grid */}
+      <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+        {stats.map((stat, index) => (
+          <div
             key={index}
-            title={stat.title}
-            value={stat.value}
-            icon={stat.icon}
-            change={stat.change}
-            suffix={stat.suffix}
-          />
-        ))} */}
+            className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg shadow-sm border dark:border-gray-700"
+          >
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="overflow-hidden">
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">
+                  {stat.title}
+                </p>
+                <p className="text-lg sm:text-xl font-display font-semibold text-gray-900 dark:text-white truncate">
+                  {stat.value}{stat.suffix}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Priority Section with Pagination */}
+      <div className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-lg shadow-sm border dark:border-gray-700">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-display font-semibold text-gray-900 dark:text-white">Priority Actions</h2>
+          {priorityReservations.length > itemsPerPage && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPriorityPage(p => Math.max(1, p - 1))}
+                disabled={priorityPage === 1}
+                className="p-1 rounded-md disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                Page {priorityPage} of {totalPriorityPages}
+              </span>
+              <button
+                onClick={() => setPriorityPage(p => Math.min(totalPriorityPages, p + 1))}
+                disabled={priorityPage === totalPriorityPages}
+                className="p-1 rounded-md disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-3">
+          {paginatedPriorityReservations.length > 0 ? (
+            paginatedPriorityReservations.map(reservation => (
+              <div key={reservation.id} className="flex items-center justify-between p-3 border dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700">
+                <div>
+                  <p className="font-medium text-gray-900 dark:text-white">{reservation.eventName}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {reservation.date} • {reservation.guests} guests
+                  </p>
+                </div>
+                <button className="flex items-center gap-2 px-3 py-1 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 rounded-md hover:bg-purple-100 dark:hover:bg-purple-900/30">
+                  <Edit className="h-4 w-4" />
+                  <span>Review Changes</span>
+                </button>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500 dark:text-gray-400 text-center py-4">
+              No priority actions required
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Two-Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Bookings (2/3 width on desktop) */}
-        <div className="lg:col-span-2 bg-white p-4 md:p-6 rounded-lg shadow-sm">
+        {/* Recent Reservations Table (2/3 width) */}
+        <div className="lg:col-span-2 bg-white dark:bg-gray-800 p-4 md:p-6 rounded-lg shadow-sm border dark:border-gray-700">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Recent Bookings</h2>
-            <button className="text-sm text-purple-600 hover:text-purple-800">
+            <h2 className="text-lg font-display font-semibold text-gray-900 dark:text-white">Recent Reservations</h2>
+            <button className="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300">
               View All
             </button>
           </div>
-          {/* <RecentBookings bookings={recentBookings} /> */}
+
+          <ReservationsTable data={recentReservations} />
         </div>
 
-        {/* Quick Actions (1/3 width on desktop) */}
+        {/* Right Sidebar (1/3 width) */}
         <div className="space-y-6">
-          <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
-            <h2 className="text-lg font-semibold mb-4">Quick Actions</h2>
+          {/* Quick Actions */}
+          <div className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-lg shadow-sm border dark:border-gray-700">
+            <h2 className="text-lg font-display font-semibold mb-4 text-gray-900 dark:text-white">Quick Actions</h2>
             <div className="space-y-3">
-              <button className="w-full flex items-center gap-3 p-3 rounded-lg bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors">
-                <Calendar className="h-5 w-5" />
-                <span>Add Availability</span>
-              </button>
-              <button className="w-full flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+              <button className="w-full flex items-center gap-3 p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors">
                 <Utensils className="h-5 w-5" />
                 <span>Update Menu</span>
               </button>
-              <button className="w-full flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
-                <Users className="h-5 w-5" />
-                <span>View Customers</span>
+              <button className="w-full flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors text-gray-700 dark:text-gray-300">
+                <Calendar className="h-5 w-5" />
+                <span>Set Availability</span>
               </button>
             </div>
           </div>
 
-          {/* Calendar Widget */}
-          <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
-            <h2 className="text-lg font-semibold mb-4">Upcoming Events</h2>
-            <div className="flex items-center justify-center p-4 bg-gray-50 rounded-lg">
-              <Calendar className="h-6 w-6 text-gray-400" />
-              <span className="ml-2 text-gray-500">Calendar integration coming soon</span>
+          {/* Mini Calendar */}
+          <div className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-lg shadow-sm border dark:border-gray-700">
+            <h2 className="text-lg font-display font-semibold mb-4 text-gray-900 dark:text-white">Availability</h2>
+            <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg text-center">
+              <Calendar className="h-8 w-8 mx-auto text-gray-400 dark:text-gray-500" />
+              <p className="mt-2 text-gray-500 dark:text-gray-400">Mark dates as unavailable</p>
+              <button className="mt-3 text-sm text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300">
+                Open Calendar
+              </button>
             </div>
           </div>
         </div>
       </div>
+
     </div>
   );
 }
