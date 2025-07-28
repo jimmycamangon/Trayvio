@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Trayvio.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+333a8db1e135c29475500861ccc7d7617735b403")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a50a3126e620716566eb294e4f03b77e7c13c6fc")]
 [assembly: System.Reflection.AssemblyProductAttribute("Trayvio.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Trayvio.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -101,7 +101,7 @@ export default function NavSidebar({
           onClick={() => toggleSection(item.label.toLowerCase())}
           className={`w-full flex items-center justify-between p-2 rounded-lg transition-colors ${
             pathname.startsWith(`/cater/${item.label.toLowerCase()}`) 
-              ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400' 
+              ? 'bg-primary/10 dark:bg-primary/10 text-primary dark:text-primary-foreground' 
               : 'hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
           }`}
         >
@@ -122,7 +122,7 @@ export default function NavSidebar({
           onClick={() => setMobileOpen(false)}
           className={`flex items-center gap-3 p-2 rounded-lg transition-colors ${
             pathname === item.href 
-              ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400' 
+              ? 'bg-primary/10 dark:bg-primary/10 text-primary dark:text-primary-foreground' 
               : 'hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
           }`}
         >
@@ -150,7 +150,7 @@ export default function NavSidebar({
                     onClick={() => setMobileOpen(false)}
                     className={`block py-2 text-sm rounded-lg transition-colors ${
                       pathname === subItem.href 
-                        ? 'text-purple-600 dark:text-purple-400 font-medium' 
+                        ? 'text-primary dark:text-primary-foreground font-medium' 
                         : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                     }`}
                   >
