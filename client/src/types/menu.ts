@@ -1,6 +1,6 @@
 export interface Menu {
     id: string;
-    vendorId: number;
+    vendorid: number;
     name: string;
     description?: string;
     price: number;

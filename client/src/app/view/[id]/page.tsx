@@ -14,7 +14,7 @@ import {
   CreateMenu,
 } from "@/lib/api/axios";
 import { Menu } from "@/types/menu";
-import MenuForm from "@/components/layout/MenuForm";
+import MenuForm from "@/components/cater/MenuForm";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -106,6 +106,9 @@ export default function VendorDetailPage() {
     }
   };
 
+
+
+
   const handleUpdate = async (data: any) => {
     if (!vendor || !editingItem) {
       toast.error("Vendor or menu is not loaded.");
@@ -147,6 +150,12 @@ export default function VendorDetailPage() {
       console.error(error);
     }
   };
+
+
+
+
+
+
   if (isLoading) {
     return <Loading />;
   }
@@ -219,7 +228,7 @@ export default function VendorDetailPage() {
             {/* 4. Available Menus / Food Packages */}
             <section className="border-b p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                Menus <MenuForm vendorId={vendor.id} onSubmit={handleCreate} />
+                Menus <MenuForm userId={vendor.id} onSubmit={handleCreate} />
               </h2>
               {loading ? (
                 <div className="block md:hidden mx-auto max-w-[400px]">
@@ -413,7 +422,7 @@ export default function VendorDetailPage() {
 
         {editingItem && (
           <MenuForm
-            vendorId={vendor.id}
+            userId={vendor.id}
             initialValues={editingItem}
             onSubmit={handleUpdate}
             open={!!editingItem}

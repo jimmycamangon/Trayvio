@@ -21,13 +21,13 @@ import {
 export default function FoodItemForm({
   initialValues,
   onSubmit,
-  vendorId,
+  userId,
   open,
   setOpen,
   isEdit = false,
   triggerLabel = "Add Menu",
 }: {
-  vendorId: number;
+  userId: number;
   initialValues?: any;
   onSubmit: (data: any) => Promise<void>;
   open?: boolean;
@@ -69,7 +69,7 @@ export default function FoodItemForm({
       try {
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("vendorId", vendorId.toString());
+        formData.append("userId", userId.toString());
 
         const response = await fetch("/api/upload", {
           method: "POST",
@@ -89,7 +89,7 @@ export default function FoodItemForm({
         setUploading(false);
       }
     },
-    [vendorId]
+    [userId]
   );
 
   const handleSubmit = async (data: any) => {
@@ -114,7 +114,7 @@ export default function FoodItemForm({
         data.imageUrl = initialValues.imageUrl;
       }
 
-      await onSubmit({ ...data, vendorId });
+      await onSubmit({ ...data }); // don't inject userId into payload sent to API
       methods.reset();
       setOpen?.(false);
     } finally {

@@ -21,7 +21,6 @@ import {
 
 export default function Home() {
   const { user, isLoading } = useAuth();
-  console.log("Current user:", user);
   const [vendors, setVendor] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
