@@ -1,7 +1,8 @@
 "use client";
 import { useAuth } from "@/context/AuthContext";
 import Loading from "@/components/layout/Loading";
-import MenuCard from "@/components/cater/MenuCard";
+// remove this line:
+// import MenuCard from "@/components/cater/MenuCard";
 import MenuForm from "@/components/cater/MenuForm";
 import { Skeleton } from "@/components/ui/skeleton";
 // vendor state removed; we'll use authenticated user instead
@@ -26,6 +27,7 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
+import MenusTable from "@/components/cater/MenusTable";
 
 export default function MenuBuilderPage() {
   const { id } = useParams();
@@ -190,74 +192,46 @@ export default function MenuBuilderPage() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-lg shadow-sm border dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-lg shadow-sm border dark:border-gray-700 flex items-center justify-between">
         <h1 className="text-2xl font-display font-semibold text-gray-900 dark:text-white">
           Menu Builder
-          {user.fullName}
         </h1>
 
-        {/* Add Menu trigger (shows Add Menu button) */}
-        <div className="mt-4">
-          <MenuForm
-            userId={Number((user as any).id)}
-            onSubmit={handleCreate}
-            isEdit={false}
-            triggerLabel="Add Menu"
-          />
+        <div className="flex items-center gap-2">
+          {/* Create trigger (MenuForm contains an internal trigger by default) */}
+          <MenuForm userId={Number((user as any).id)} onSubmit={handleCreate} isEdit={false} triggerLabel="Add Menu" />
         </div>
       </div>
+
       <div className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-lg shadow-sm border dark:border-gray-700">
-        {menus.length === 0 ? (
-          <div className="text-sm text-muted-foreground">No menus found.</div>
-        ) : (
-          menus.map((m) => (
-            <MenuCard
-              key={m.id}
-              {...m}
-              onEdit={() => setEditingItem(m)}
-              onDelete={() => setDeletingItem(m)}
-            />
-          ))
-        )}
+        {/* Table view (search / sort / pagination) */}
+        <MenusTable
+          data={menus}
+          onEdit={(m) => setEditingItem(m)}
+          onDelete={(m) => setDeletingItem(m)}
+        />
       </div>
 
-      {/* Edit form (controlled) */}
+      {/* controlled edit form */}
       {editingItem && (
         <MenuForm
           userId={Number((user as any).id)}
           initialValues={editingItem}
           onSubmit={handleUpdate}
           open={!!editingItem}
-          setOpen={(open) => {
-            if (!open) setEditingItem(null);
-          }}
+          setOpen={(open) => { if (!open) setEditingItem(null); }}
           isEdit={true}
         />
       )}
 
-      {/* Delete confirmation */}
+      {/* delete confirmation dialog */}
       <Dialog open={!!deletingItem} onOpenChange={(open) => { if (!open) setDeletingItem(null); }}>
         <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete Menu</DialogTitle>
-          </DialogHeader>
-          <div className="py-2">
-            Are you sure you want to delete <strong>{deletingItem?.name}</strong>?
-          </div>
+          <DialogHeader><DialogTitle>Delete Menu</DialogTitle></DialogHeader>
+          <div className="py-2">Delete <strong>{deletingItem?.name}</strong>?</div>
           <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline" className="mr-2">Cancel</Button>
-            </DialogClose>
-            <Button
-              variant="destructive"
-              onClick={async () => {
-                if (!deletingItem) return;
-                await handleDelete(String(deletingItem.id));
-                setDeletingItem(null);
-              }}
-            >
-              Delete
-            </Button>
+            <DialogClose asChild><Button variant="outline">Cancel</Button></DialogClose>
+            <Button variant="destructive" onClick={async () => { if (!deletingItem) return; await handleDelete(String(deletingItem.id)); setDeletingItem(null); }}>Delete</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
