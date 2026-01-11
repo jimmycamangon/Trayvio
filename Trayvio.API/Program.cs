@@ -63,6 +63,21 @@ builder.Services.AddCors(options =>
     );
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "AllowFrontend",
+        policy =>
+        {
+            policy
+                .WithOrigins("https://trayvio.vercel.app", "https://trayvio.vercel.app/")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        }
+    );
+});
+
 // Authentication & Session
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -104,6 +119,7 @@ app.UseHttpsRedirection();
 // Critical Middleware Order
 app.UseRouting();
 app.UseCors("ReactApp");
+app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
