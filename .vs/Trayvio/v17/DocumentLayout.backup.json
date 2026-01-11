@@ -46,21 +46,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 230,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 6,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "GetUserByEmailQueryHandler.cs",
-              "DocumentMoniker": "D:\\JimFiles\\React\\Trayvio\\Trayvio.Application\\Queries\\Users\\GetUserByEmailQueryHandler.cs",
-              "RelativeDocumentMoniker": "Trayvio.Application\\Queries\\Users\\GetUserByEmailQueryHandler.cs",
-              "ToolTip": "D:\\JimFiles\\React\\Trayvio\\Trayvio.Application\\Queries\\Users\\GetUserByEmailQueryHandler.cs",
-              "RelativeToolTip": "Trayvio.Application\\Queries\\Users\\GetUserByEmailQueryHandler.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-06T06:49:47.913Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Document",
               "DocumentIndex": 1,
@@ -71,8 +58,7 @@
               "RelativeToolTip": "Trayvio.API\\Controllers\\UserController.cs",
               "ViewState": "AgIAAJsAAAAAAAAAAAAswKgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-05T07:45:05.93Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-05T07:45:05.93Z"
             },
             {
               "$type": "Document",
@@ -84,8 +70,7 @@
               "RelativeToolTip": "Trayvio.Application\\Queries\\Users\\GetUserByEmailQuery.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-06T06:49:08.139Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-06T06:49:08.139Z"
             },
             {
               "$type": "Document",
@@ -97,8 +82,7 @@
               "RelativeToolTip": "Trayvio.Infrastructure\\Repositories\\UserRepository.cs",
               "ViewState": "AgIAABIAAAAAAAAAAAAkwDcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-06T06:36:23.625Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-06T06:36:23.625Z"
             },
             {
               "$type": "Document",
@@ -110,8 +94,7 @@
               "RelativeToolTip": "Trayvio.Domain\\Interfaces\\IUserRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-06T06:36:07.605Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-06T06:36:07.605Z"
             },
             {
               "$type": "Document",
@@ -123,8 +106,7 @@
               "RelativeToolTip": "Trayvio.Application\\Commands\\Users\\LoginCommandHandler.cs",
               "ViewState": "AgIAABAAAAAAAAAAAAAgwCUAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-06T06:35:26.973Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-06T06:35:26.973Z"
             },
             {
               "$type": "Document",
@@ -136,8 +118,7 @@
               "RelativeToolTip": "Trayvio.Application\\Commands\\Users\\LoginCommand.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-06T06:35:25.775Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-06T06:35:25.775Z"
             },
             {
               "$type": "Document",
@@ -147,10 +128,22 @@
               "RelativeDocumentMoniker": "Trayvio.API\\Program.cs",
               "ToolTip": "D:\\JimFiles\\React\\Trayvio\\Trayvio.API\\Program.cs",
               "RelativeToolTip": "Trayvio.API\\Program.cs",
-              "ViewState": "AgIAAEgAAAAAAAAAAAAAAGYAAAAKAAAAAAAAAA==",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAACUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-07-05T09:44:16.374Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "GetUserByEmailQueryHandler.cs",
+              "DocumentMoniker": "D:\\JimFiles\\React\\Trayvio\\Trayvio.Application\\Queries\\Users\\GetUserByEmailQueryHandler.cs",
+              "RelativeDocumentMoniker": "Trayvio.Application\\Queries\\Users\\GetUserByEmailQueryHandler.cs",
+              "ToolTip": "D:\\JimFiles\\React\\Trayvio\\Trayvio.Application\\Queries\\Users\\GetUserByEmailQueryHandler.cs",
+              "RelativeToolTip": "Trayvio.Application\\Queries\\Users\\GetUserByEmailQueryHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-06T06:49:47.913Z"
             },
             {
               "$type": "Document",
@@ -162,8 +155,7 @@
               "RelativeToolTip": "Trayvio.API\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-07-05T11:02:04.91Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-05T11:02:04.91Z"
             }
           ]
         }

@@ -46,20 +46,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 230,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 5,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "UserController.cs",
-              "DocumentMoniker": "D:\\JimFiles\\React\\Trayvio\\Trayvio.API\\Controllers\\UserController.cs",
-              "RelativeDocumentMoniker": "Trayvio.API\\Controllers\\UserController.cs",
-              "ToolTip": "D:\\JimFiles\\React\\Trayvio\\Trayvio.API\\Controllers\\UserController.cs",
-              "RelativeToolTip": "Trayvio.API\\Controllers\\UserController.cs",
-              "ViewState": "AgIAAJsAAAAAAAAAAAAswKgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-05T07:45:05.93Z"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 5,
@@ -128,10 +116,22 @@
               "RelativeDocumentMoniker": "Trayvio.API\\Program.cs",
               "ToolTip": "D:\\JimFiles\\React\\Trayvio\\Trayvio.API\\Program.cs",
               "RelativeToolTip": "Trayvio.API\\Program.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAACUAAAA+AAAAAAAAAA==",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAACgAAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-07-05T09:44:16.374Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "D:\\JimFiles\\React\\Trayvio\\Trayvio.API\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "Trayvio.API\\Controllers\\UserController.cs",
+              "ToolTip": "D:\\JimFiles\\React\\Trayvio\\Trayvio.API\\Controllers\\UserController.cs",
+              "RelativeToolTip": "Trayvio.API\\Controllers\\UserController.cs",
+              "ViewState": "AgIAAJsAAAAAAAAAAAAswKgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-05T07:45:05.93Z"
             },
             {
               "$type": "Document",

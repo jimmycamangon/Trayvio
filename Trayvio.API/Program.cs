@@ -78,6 +78,24 @@ builder.Services.AddCors(options =>
     );
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "AllowVercel",
+        policy =>
+        {
+            policy
+                .WithOrigins(
+                    "https://trayvio.vercel.app",
+                    "http://localhost:3000" // local dev
+                )
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        }
+    );
+});
+
 // Authentication & Session
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -104,7 +122,7 @@ builder
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
@@ -120,6 +138,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("ReactApp");
 app.UseCors("AllowFrontend");
+app.UseCors("AllowVercel");
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
