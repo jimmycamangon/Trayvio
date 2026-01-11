@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "N7EOrHpS3BayLNe4EAEkfjvuTAMsaqBFlh3E1pvtAYQ=",
+  "Source": "Trayvio.API",
+  "BasePath": "_content/Trayvio.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
