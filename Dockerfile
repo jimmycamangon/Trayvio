@@ -1,24 +1,23 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-WORKDIR /app
-EXPOSE 8080
-
+# ---------- BUILD ----------
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-COPY *.sln .
-
-COPY trayvio.API/*.csproj trayvio.API/
-COPY trayvio.Application/*.csproj trayvio.Application/
-COPY trayvio.Domain/*.csproj trayvio.Domain/
-COPY trayvio.Infrastructure/*.csproj trayvio.Infrastructure/
-
-RUN dotnet restore
-
+# copy everything
 COPY . .
 
-RUN dotnet publish trayvio.API/trayvio.API.csproj -c Release -o /app/publish
+# restore only the API project
+RUN dotnet restore Trayvio.API/Trayvio.API.csproj
 
-FROM base AS final
+# publish API
+RUN dotnet publish Trayvio.API/Trayvio.API.csproj -c Release -o /app/publish
+
+# ---------- RUNTIME ----------
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
+
 COPY --from=build /app/publish .
-ENTRYPOINT ["dotnet", "trayvio.API.dll"]
+
+ENV ASPNETCORE_URLS=http://+:8080
+EXPOSE 8080
+
+ENTRYPOINT ["dotnet", "Trayvio.API.dll"]
