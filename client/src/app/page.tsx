@@ -57,7 +57,7 @@ export default function Home() {
     <ProtectedRoute>
       <Navbar />
       {/* Main Layout */}
-      // Home Section
+      {/* // Home Section */}
       <main className="min-h-screen bg-gray-50">
         <section className="min-h-screen flex-col items-center justify-between p-2 m-12 md:p-8 lg:p-12">
           <div className="pt-6">

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Nunito_Sans } from "next/font/google";
 import "./globals.css";
-import Footer from "@/components/layout/Footer";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthContext";
 

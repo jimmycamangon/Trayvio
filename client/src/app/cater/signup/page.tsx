@@ -19,7 +19,7 @@ export default function CaterSignupPage() {
       {/* Right Side - Signup Form */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-white">
         <div className="w-full max-w-md space-y-6">
-          <SignupForm onSubmit={(data) => {}} />
+          <SignupForm />
         </div>
       </div>
     </main>

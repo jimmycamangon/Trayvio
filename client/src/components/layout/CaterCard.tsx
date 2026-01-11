@@ -1,5 +1,4 @@
 import { Vendor } from "@/types/vendor";
-import { User } from "@/types/users";
 import Image from "next/image";
 import Link from "next/link";
 

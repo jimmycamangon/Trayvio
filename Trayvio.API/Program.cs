@@ -19,18 +19,22 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Trayvio API", Version = "v1" });
-    c.AddSecurityDefinition("cookieAuth", new OpenApiSecurityScheme
-    {
-        Type = SecuritySchemeType.ApiKey,
-        In = ParameterLocation.Cookie,
-        Name = ".AspNetCore.Cookies",
-        Description = "Cookie-based authentication"
-    });
+    c.AddSecurityDefinition(
+        "cookieAuth",
+        new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.ApiKey,
+            In = ParameterLocation.Cookie,
+            Name = ".AspNetCore.Cookies",
+            Description = "Cookie-based authentication",
+        }
+    );
 });
 
 // Database Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 
 // Repositories
 builder.Services.AddScoped<IFoodItemRepository, FoodItemRepository>();
@@ -46,13 +50,17 @@ builder.Services.AddMediatR(typeof(GetFoodItemsQueryHandler).Assembly);
 // CORS Configuration (Updated)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("ReactApp", policy =>
-    {
-        policy.WithOrigins("http://localhost:3000") 
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
-    });
+    options.AddPolicy(
+        "ReactApp",
+        policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        }
+    );
 });
 
 // Authentication & Session
@@ -65,14 +73,18 @@ builder.Services.AddSession(options =>
     options.Cookie.SameSite = SameSiteMode.None; // For development
 });
 
-builder.Services.AddAuthentication("Cookies")
-    .AddCookie("Cookies", options =>
-    {
-        options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // For dev
-        options.ExpireTimeSpan = TimeSpan.FromHours(2);
-        options.SlidingExpiration = true;
-    });
+builder
+    .Services.AddAuthentication("Cookies")
+    .AddCookie(
+        "Cookies",
+        options =>
+        {
+            options.Cookie.HttpOnly = true;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // For dev
+            options.ExpireTimeSpan = TimeSpan.FromHours(2);
+            options.SlidingExpiration = true;
+        }
+    );
 
 var app = builder.Build();
 
@@ -91,13 +103,16 @@ app.UseHttpsRedirection();
 
 // Critical Middleware Order
 app.UseRouting();
-app.UseCors("ReactApp"); 
+app.UseCors("ReactApp");
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
 
 // Test endpoint
-app.MapGet("/api/health", () => Results.Ok(new { status = "Healthy", timestamp = DateTime.UtcNow }));
+app.MapGet(
+    "/api/health",
+    () => Results.Ok(new { status = "Healthy", timestamp = DateTime.UtcNow })
+);
 
 app.MapControllers();
 app.Run();

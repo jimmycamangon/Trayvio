@@ -6,7 +6,6 @@ import {
   DialogDescription,
   DialogTrigger,
   DialogFooter,
-  DialogClose,
 } from "@/components/ui/dialog";
 
 export function ReusableDialog({

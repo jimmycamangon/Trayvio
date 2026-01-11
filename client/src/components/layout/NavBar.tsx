@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Menu, LogOut } from "lucide-react";
 import {
   DropdownMenu,
@@ -14,9 +14,8 @@ import {
 import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
-  const pathname = usePathname();
   const router = useRouter();
-  const { user, logout, isLoading } = useAuth();
+  const { user, logout} = useAuth();
 
   const handleLogout = async () => {
     try {

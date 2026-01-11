@@ -1,4 +1,32 @@
 "use client";
+
+type Vendor = {
+  id: number;
+  ownerId: number;
+};
+
+type MenuFormData = {
+  name: string;
+  description?: string;
+  price: number;
+  imageUrl?: string;
+  selectedFile: File | null;
+  userId?: number;
+};
+
+type ApiError = {
+  response?: {
+    status?: number;
+    data?: unknown;
+  };
+  message?: string;
+};
+type AuthUser = {
+  id?: number;
+  vendorId?: number;
+  vendor?: { id?: number };
+};
+
 import { useAuth } from "@/context/AuthContext";
 import Loading from "@/components/layout/Loading";
 // remove this line:
@@ -6,7 +34,7 @@ import Loading from "@/components/layout/Loading";
 import MenuForm from "@/components/cater/MenuForm";
 import { Skeleton } from "@/components/ui/skeleton";
 // vendor state removed; we'll use authenticated user instead
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   UpdateMenu,
   DeleteMenu,
@@ -32,37 +60,39 @@ import MenusTable from "@/components/cater/MenusTable";
 export default function MenuBuilderPage() {
   const { id } = useParams();
   const { user, isLoading } = useAuth();
+  const authUser = user as AuthUser | null;
+  const authUserId = authUser?.id;
   const [menus, setMenus] = useState<Menu[]>([]);
   const [editingItem, setEditingItem] = useState<Menu | null>(null);
   const [deletingItem, setDeletingItem] = useState<Menu | null>(null);
   const [loading, setLoading] = useState(true);
 
   // compute active vendor id from route or user (adjust shape if your user has vendorId)
-  const resolveVendorId = () => {
+  const resolveVendorId = useCallback((): number => {
     if (id) return Number(id);
-    const u = (user as any) ?? {};
-    // prefer explicit vendorId on the user object or nested vendor.id
-    return Number(u.vendorId ?? u.vendor?.id ?? NaN);
-  };
+
+    const u = user as AuthUser | null;
+    return Number(u?.vendorId ?? u?.vendor?.id ?? NaN);
+  }, [id, user]);
 
   // attempt to resolve vendorId; if missing, try to find a vendor where ownerId === user.id
-  const ensureVendorId = async (): Promise<number | null> => {
+  const ensureVendorId = useCallback(async (): Promise<number | null> => {
     let vId = resolveVendorId();
     if (!vId || Number.isNaN(vId)) {
-      console.debug("No vendorId from route/user — trying vendor lookup for user", user);
       try {
-        const vendors = await GetVendors();
-        const ownerId = Number((user as any)?.id);
-        const match = vendors.find((v: any) => Number(v.ownerId) === ownerId);
+        const ownerId = Number(authUserId);
+
+        const vendors: Vendor[] = await GetVendors();
+        const match = vendors.find((v) => Number(v.ownerId) === ownerId);
+
         if (match) vId = Number(match.id);
       } catch (err) {
         console.warn("Failed to fetch vendors to resolve vendorId", err);
       }
     }
-    console.debug("Resolved vendorId =", vId);
     return vId || null;
-  };
-  
+  }, [authUserId, resolveVendorId]);
+
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -70,7 +100,9 @@ export default function MenuBuilderPage() {
       const vendorId = await ensureVendorId();
       console.debug("MenuBuilderPage: ensured vendorId =", vendorId);
       if (!vendorId || Number.isNaN(vendorId)) {
-        console.warn("MenuBuilderPage: no vendor id available, skipping menus fetch");
+        console.warn(
+          "MenuBuilderPage: no vendor id available, skipping menus fetch"
+        );
         if (mounted) {
           setMenus([]);
           setLoading(false);
@@ -83,11 +115,13 @@ export default function MenuBuilderPage() {
         console.debug("Fetching menus for vendorId:", vendorId);
         const result = await GetMenusByVendor(vendorId);
         if (mounted) setMenus(result);
-      } catch (error: any) {
-        if ((error as any)?.response?.status === 404) {
-          if (mounted) setMenus([]);
+      } catch (error: unknown) {
+        const err = error as ApiError;
+
+        if (err.response?.status === 404) {
+          setMenus([]);
         } else {
-          console.error("Failed to fetch menus:", error);
+          console.error("Failed to fetch menus:", err);
         }
       } finally {
         if (mounted) setLoading(false);
@@ -97,20 +131,23 @@ export default function MenuBuilderPage() {
     return () => {
       mounted = false;
     };
-  }, [id, user]);
+  }, [ensureVendorId]);
 
-  const handleCreate = async (data: any) => {
+  const handleCreate = async (data: MenuFormData) => {
     try {
       // Resolve vendor id reliably (route > user.vendorId > vendor lookup)
       const vendorId = await ensureVendorId();
       if (!vendorId) {
-        console.error("Cannot create menu: vendorId unresolved", { user, routeId: id });
+        console.error("Cannot create menu: vendorId unresolved", {
+          user,
+          routeId: id,
+        });
         toast.error("Unable to determine vendor. Please check your account.");
         return;
       }
-      // remove File objects / transient fields that shouldn't be serialized
-      const { selectedFile, userId: _userId, ...rest } = data;
- 
+      const { selectedFile, ...rest } = data;
+      void selectedFile;
+
       const payload = {
         ...rest,
         vendorId,
@@ -123,11 +160,12 @@ export default function MenuBuilderPage() {
       const created = await CreateMenu(payload);
       setMenus((prev) => [created, ...prev]);
       toast.success("Menu created successfully!");
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as ApiError;
       // Prefer logging the server response body if available
-      console.error("CreateMenu error:", error);
-      if (error.response) {
-        console.error("Server response:", error.response.data ?? error.response);
+      console.error("CreateMenu error:", err);
+      if (err.response) {
+        console.error("Server response:", err.response.data ?? err.response);
       }
       toast.error("Failed to create menu. See console for details.");
     } finally {
@@ -135,7 +173,7 @@ export default function MenuBuilderPage() {
     }
   };
 
-  const handleUpdate = async (data: any) => {
+  const handleUpdate = async (data: MenuFormData) => {
     if (!editingItem) {
       toast.error("Menu is not loaded.");
       return;
@@ -160,9 +198,9 @@ export default function MenuBuilderPage() {
       );
       setEditingItem(null);
       toast.success("Menu updated successfully!");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Update error:", error);
-      toast.error(`Update failed: ${error.message}`);
+      toast.error(`Update failed: ${error}`);
     }
   };
 
@@ -194,12 +232,17 @@ export default function MenuBuilderPage() {
     <div className="space-y-6">
       <div className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-lg shadow-sm border dark:border-gray-700 flex items-center justify-between">
         <h1 className="text-2xl font-display font-semibold text-gray-900 dark:text-white">
-          Menu Builder
+          Menu Builderrrr
         </h1>
 
         <div className="flex items-center gap-2">
           {/* Create trigger (MenuForm contains an internal trigger by default) */}
-          <MenuForm userId={Number((user as any).id)} onSubmit={handleCreate} isEdit={false} triggerLabel="Add Menu" />
+          <MenuForm
+            userId={Number(authUser?.id)}
+            onSubmit={handleCreate}
+            isEdit={false}
+            triggerLabel="Add Menu"
+          />
         </div>
       </div>
 
@@ -215,23 +258,45 @@ export default function MenuBuilderPage() {
       {/* controlled edit form */}
       {editingItem && (
         <MenuForm
-          userId={Number((user as any).id)}
+          userId={Number(authUser?.id)}
           initialValues={editingItem}
           onSubmit={handleUpdate}
           open={!!editingItem}
-          setOpen={(open) => { if (!open) setEditingItem(null); }}
+          setOpen={(open) => {
+            if (!open) setEditingItem(null);
+          }}
           isEdit={true}
         />
       )}
 
       {/* delete confirmation dialog */}
-      <Dialog open={!!deletingItem} onOpenChange={(open) => { if (!open) setDeletingItem(null); }}>
+      <Dialog
+        open={!!deletingItem}
+        onOpenChange={(open) => {
+          if (!open) setDeletingItem(null);
+        }}
+      >
         <DialogContent>
-          <DialogHeader><DialogTitle>Delete Menu</DialogTitle></DialogHeader>
-          <div className="py-2">Delete <strong>{deletingItem?.name}</strong>?</div>
+          <DialogHeader>
+            <DialogTitle>Delete Menu</DialogTitle>
+          </DialogHeader>
+          <div className="py-2">
+            Delete <strong>{deletingItem?.name}</strong>?
+          </div>
           <DialogFooter>
-            <DialogClose asChild><Button variant="outline">Cancel</Button></DialogClose>
-            <Button variant="destructive" onClick={async () => { if (!deletingItem) return; await handleDelete(String(deletingItem.id)); setDeletingItem(null); }}>Delete</Button>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button
+              variant="destructive"
+              onClick={async () => {
+                if (!deletingItem) return;
+                await handleDelete(String(deletingItem.id));
+                setDeletingItem(null);
+              }}
+            >
+              Delete
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -38,11 +38,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           id: response.user.id,
           fullName: response.user.fullName,
           email: response.user.email,
-          phoneNumber: response.user.phoneNumber || '',
+          phoneNumber: response.user.phoneNumber || "",
           role: response.user.role,
           createdAt: new Date(response.user.createdAt),
           isActive: response.user.isActive,
-          passwordHash: '' 
+          passwordHash: "",
         });
         setIsAuthenticated(true);
         return true;
@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       await Login(email, password);
       return await checkAuth();
-    } catch (error) {
+    } catch {
       setUser(null);
       setIsAuthenticated(false);
       return false;
@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await Logout();
       setUser(null);
       setIsAuthenticated(false);
-      router.push('/login');
+      router.push("/login");
     } finally {
       setIsLoading(false);
     }

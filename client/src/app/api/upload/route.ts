@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 export async function POST(request: Request) {
   const data = await request.formData();
   const file: File | null = data.get('file') as unknown as File;
-  const vendorId = data.get('vendorId');
+  // const vendorId = data.get('vendorId');
 
   if (!file) {
     return NextResponse.json({ error: 'No file provided' }, { status: 400 });

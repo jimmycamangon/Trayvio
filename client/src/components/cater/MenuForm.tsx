@@ -12,11 +12,17 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import {
-  FormField,
-  FormLabel,
-  FormControl,
-} from "@/components/ui/form";
+import { FormField, FormLabel, FormControl } from "@/components/ui/form";
+
+import Image from "next/image";
+
+type MenuFormValues = {
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  selectedFile: File | null;
+};
 
 export default function FoodItemForm({
   initialValues,
@@ -28,36 +34,38 @@ export default function FoodItemForm({
   triggerLabel = "Add Menu",
 }: {
   userId: number;
-  initialValues?: any;
-  onSubmit: (data: any) => Promise<void>;
+  initialValues?: Partial<MenuFormValues>;
+  onSubmit: (data: MenuFormValues) => Promise<void>;
   open?: boolean;
   setOpen?: (open: boolean) => void;
   isEdit?: boolean;
   triggerLabel?: string;
 }) {
-  const methods = useForm({
+  const methods = useForm<MenuFormValues>({
     defaultValues: {
       name: "",
       description: "",
       price: 0,
       imageUrl: "",
-      selectedFile: null as File | null,
+      selectedFile: null,
       ...initialValues,
     },
     mode: "onSubmit",
   });
 
+  const iv = initialValues;
+
   useEffect(() => {
-    if (initialValues) {
-      methods.reset({
-        name: initialValues.name || "",
-        description: initialValues.description || "",
-        price: initialValues.price || 0,
-        imageUrl: initialValues.imageUrl || "", // Changed to lowercase
-        selectedFile: null,
-      });
-    }
-  }, [initialValues, methods]);
+    if (!iv) return;
+
+    methods.reset({
+      name: iv.name ?? "",
+      description: iv.description ?? "",
+      price: iv.price ?? 0,
+      imageUrl: iv.imageUrl ?? "",
+      selectedFile: null,
+    });
+  }, [iv, methods]);
 
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -92,7 +100,7 @@ export default function FoodItemForm({
     [userId]
   );
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: MenuFormValues) => {
     setLoading(true);
     try {
       // If a new file was selected, upload it
@@ -100,7 +108,7 @@ export default function FoodItemForm({
         try {
           const imagePath = await handleImageUpload(data.selectedFile);
           data.imageUrl = imagePath;
-        } catch (error) {
+        } catch {
           methods.setError("imageUrl", {
             type: "manual",
             message: "Failed to upload image",
@@ -128,14 +136,16 @@ export default function FoodItemForm({
   };
 
   const FormContent = () => {
-    const methods = useFormContext();
+    const methods = useFormContext<MenuFormValues>();
+
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const initialImageUrl = initialValues?.imageUrl;
 
     useEffect(() => {
-      if (initialValues?.imageUrl) {
-        setPreviewUrl(initialValues.imageUrl);
+      if (initialImageUrl) {
+        setPreviewUrl(initialImageUrl);
       }
-    }, [initialValues]);
+    }, [initialImageUrl]);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
@@ -236,14 +246,12 @@ export default function FoodItemForm({
               <FormControl>
                 <div className="space-y-2">
                   <div className="mt-2">
-                    <img
+                    <Image
                       src={previewUrl || "/images/placeholder.jpg"}
                       alt="Preview"
-                      className="h-32 w-32 object-cover rounded-md border"
-                      onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src =
-                          "/images/placeholder.jpg";
-                      }}
+                      width={128}
+                      height={128}
+                      className="object-cover rounded-md border"
                     />
                   </div>
                   <Input

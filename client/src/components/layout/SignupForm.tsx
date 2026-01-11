@@ -8,13 +8,12 @@ import {
   Form,
   FormField,
   FormItem,
-  FormMessage,
   FormControl,
 } from "@/components/ui/form";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import { toast } from "sonner";
 import { Signup } from "@/lib/api/axios";
 
@@ -57,8 +56,12 @@ export default function SignupForm({
       toast.success("Signup successful!");
       router.push("/login");
       if (onSubmit) onSubmit(result);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Signup failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }

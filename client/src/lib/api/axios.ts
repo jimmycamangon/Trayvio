@@ -1,11 +1,17 @@
 import axios, {
   AxiosError,
-  AxiosRequestConfig,
   AxiosResponse,
   InternalAxiosRequestConfig,
   AxiosRequestHeaders
 } from 'axios';
-import { CurrentUserResponse, User } from '@/types/users';
+import { CurrentUserResponse } from '@/types/users';
+
+
+type ApiErrorResponse = {
+  message?: string;
+  error?: string;
+};
+
 
 // Configuration
 const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5222/api';
@@ -80,10 +86,12 @@ axiosInstance.interceptors.response.use(
           }
           return Promise.reject(new Error('Requested resource not found'));
         default:
-          const responseData = axiosError.response.data as any;
-          const serverMessage = responseData?.message || 
-                              responseData?.error ||
-                              `Request failed with status ${axiosError.response.status}`;
+          const responseData = axiosError.response?.data as ApiErrorResponse | undefined;
+          const serverMessage =
+            responseData?.message ||
+            responseData?.error ||
+            `Request failed with status ${axiosError.response.status}`;
+
           return Promise.reject(new Error(serverMessage));
       }
     }
@@ -98,17 +106,18 @@ axiosInstance.interceptors.response.use(
 interface ConnectionStatus {
   connected: boolean;
   url: string;
-  data?: any;
+  data?: unknown;
   error?: string;
 }
+
 
 export const checkConnection = async (): Promise<ConnectionStatus> => {
   try {
     const response = await axiosInstance.get('/health');
-    return { 
+    return {
       connected: true,
       url: baseURL,
-      data: response.data 
+      data: response.data
     };
   } catch (error) {
     return {
@@ -120,7 +129,10 @@ export const checkConnection = async (): Promise<ConnectionStatus> => {
 };
 
 // User endpoints
-export const Login = async (email: string, password: string): Promise<any> => {
+export const Login = async (
+  email: string,
+  password: string
+): Promise<unknown> => {
   const response = await axiosInstance.post('/User/login', { email, password });
   return response.data;
 };
@@ -129,19 +141,26 @@ export const GetCurrentUser = async (): Promise<CurrentUserResponse> => {
   try {
     const response = await axiosInstance.get('/User/current');
     return response.data;
-  } catch (error: any) {
-    if (error.response?.status === 404) {
+  } catch (error: unknown) {
+    if (
+      error instanceof AxiosError &&
+      error.response?.status === 404
+    ) {
       return {
         success: false,
         message: 'No active user session',
         user: null
       };
     }
-    
-    console.error('Error fetching current user:', error);
+
+    const message =
+      error instanceof AxiosError
+        ? (error.response?.data as ApiErrorResponse)?.message ?? 'Failed to fetch user'
+        : 'Failed to fetch user';
+
     return {
       success: false,
-      message: error.response?.data?.message || 'Failed to fetch user',
+      message,
       user: null
     };
   }
@@ -151,17 +170,22 @@ export const Logout = async (): Promise<void> => {
   await axiosInstance.post('/User/logout');
 };
 
-export const Signup = async (data: any) => {
+export const Signup = async (data: Record<string, unknown>) => {
+
   try {
     const response = await axiosInstance.post('/User/signup', data);
     return response.data;
-  } catch (error: any) {
-    console.error('Signup failed:', error);
-    const errorMessage = error.response?.data?.message ||
-      error.response?.data?.error ||
-      "Please check your input";
-    throw new Error(errorMessage);
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      const errorMessage =
+        (error.response?.data as ApiErrorResponse)?.message ||
+        (error.response?.data as ApiErrorResponse)?.error ||
+        'Please check your input';
+      throw new Error(errorMessage);
+    }
+    throw error;
   }
+
 };
 
 // Vendor endpoints
@@ -200,8 +224,11 @@ export const GetMenusByVendor = async (id: number) => {
   try {
     const response = await axiosInstance.get(`/menu/vendor/${id}`);
     return response.data;
-  } catch (error: any) {
-    if (error.response && error.response.status === 404) {
+  } catch (error: unknown) {
+    if (
+      error instanceof AxiosError &&
+      error.response?.status === 404
+    ) {
       return [];
     }
     console.error(`Failed to fetch menu items for vendor ${id}:`, error);
@@ -209,7 +236,9 @@ export const GetMenusByVendor = async (id: number) => {
   }
 };
 
-export const CreateMenu = async (data: any) => {
+export const CreateMenu = async (
+  data: Record<string, unknown>
+) => {
   try {
     const response = await axiosInstance.post('/menu', data);
     return response.data;
@@ -219,16 +248,25 @@ export const CreateMenu = async (data: any) => {
   }
 };
 
-export const UpdateMenu = async (id: number, data: any) => {
+export const UpdateMenu = async (
+  id: number,
+  data: Record<string, unknown>
+) => {
   try {
     const response = await axiosInstance.put(`/menu/${id}`, data);
     return response.data;
-  } catch (error: any) {
-    console.error(`Failed to update menu ${id}:`, error);
-    const errorMessage = error.response?.data?.message ||
-      error.response?.data?.error ||
-      "Please check your input";
-    throw new Error(errorMessage);
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      const responseData = error.response?.data as ApiErrorResponse | undefined;
+      const errorMessage =
+        responseData?.message ||
+        responseData?.error ||
+        'Please check your input';
+
+      throw new Error(errorMessage);
+    }
+
+    throw error;
   }
 };
 

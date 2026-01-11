@@ -4,10 +4,9 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
 
 type ForgotPasswordFormValues = {
   email: string;
@@ -18,16 +17,12 @@ export default function ForgotPasswordForm({
 }: {
   onSubmit?: (data: ForgotPasswordFormValues) => void;
 }) {
-  const [submitted, setSubmitted] = useState(false);
-
   const form = useForm<ForgotPasswordFormValues>({
     defaultValues: { email: "" },
   });
 
   const handleSubmit = (data: ForgotPasswordFormValues) => {
     if (onSubmit) onSubmit(data);
-    setSubmitted(true);
-    // You can also handle API call here
   };
 
   return (
@@ -73,7 +68,7 @@ export default function ForgotPasswordForm({
 
           <div className="mt-6 text-center">
             <p className="text-muted-foreground text-sm">
-              We'll send you a link to reset your password.
+              We&apos;ll send you a link to reset your password.
             </p>
           </div>
         </div>

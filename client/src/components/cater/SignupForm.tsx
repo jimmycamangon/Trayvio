@@ -4,17 +4,11 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormMessage,
-  FormControl,
-} from "@/components/ui/form";
+import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Signup } from "@/lib/api/axios";
 
@@ -59,8 +53,12 @@ export default function SignupForm({
       toast.success("Signup successful!");
       router.push("/login");
       if (onSubmit) onSubmit(result);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Signup failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -202,7 +200,7 @@ export default function SignupForm({
         </div>
 
         <div className="text-center text-sm text-gray-500">
-          Don't have an account?{" "}
+          Don&apos;t have an account?
           <Button asChild variant="link" className="px-2">
             <Link href="/cater/login">Sign In</Link>
           </Button>

@@ -14,7 +14,7 @@ export default function TopNav({
   const { user, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const { theme, toggleTheme, isInitialized } = useTheme();
+  const { theme, toggleTheme } = useTheme();
 
   const hideNav = pathname === "/cater/login" || pathname === "/cater/signup";
   if (hideNav) {

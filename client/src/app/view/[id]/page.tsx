@@ -6,6 +6,8 @@ import { useAuth } from "@/context/AuthContext";
 import Loading from "@/components/layout/Loading";
 import { Skeleton } from "@/components/ui/skeleton";
 import Navbar from "@/components/layout/NavBar";
+import Image from "next/image";
+
 import {
   GetVendorById,
   UpdateMenu,
@@ -19,13 +21,19 @@ import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/layout/Footer";
+
+type MenuFormData = {
+  name: string;
+  description?: string;
+  price: number;
+  imageUrl?: string;
+};
 
 // Dummy data for illustration
 const caterer = {
@@ -69,9 +77,8 @@ export default function VendorDetailPage() {
   const [editingItem, setEditingItem] = useState<Menu | null>(null);
   const [deletingItem, setDeletingItem] = useState<Menu | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  const { user, isLoading } = useAuth();
+  const { isLoading } = useAuth();
 
   useEffect(() => {
     if (id) {
@@ -90,7 +97,7 @@ export default function VendorDetailPage() {
     }
   }, [id]);
 
-  const handleCreate = async (data: any) => {
+  const handleCreate = async (data: MenuFormData) => {
     try {
       const created = await CreateMenu({
         ...data,
@@ -106,10 +113,7 @@ export default function VendorDetailPage() {
     }
   };
 
-
-
-
-  const handleUpdate = async (data: any) => {
+  const handleUpdate = async (data: MenuFormData) => {
     if (!vendor || !editingItem) {
       toast.error("Vendor or menu is not loaded.");
       return;
@@ -134,9 +138,9 @@ export default function VendorDetailPage() {
       );
       setEditingItem(null);
       toast.success("Menu updated successfully!");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Update error:", error);
-      toast.error(`Update failed: ${error.message}`);
+      toast.error("Update failed.");
     }
   };
 
@@ -151,11 +155,6 @@ export default function VendorDetailPage() {
     }
   };
 
-
-
-
-
-
   if (isLoading) {
     return <Loading />;
   }
@@ -169,11 +168,13 @@ export default function VendorDetailPage() {
         <section>
           <div className="w-full h-64 md:h-96 bg-gray-200 rounded-b-2xl overflow-hidden flex">
             {caterer.coverImages.map((img, idx) => (
-              <img
+              <Image
                 key={idx}
                 src={img}
                 alt={`Cover ${idx + 1}`}
-                className="object-cover w-full h-full"
+                width={400}
+                height={300}
+                className="object-cover"
               />
             ))}
           </div>
@@ -185,7 +186,7 @@ export default function VendorDetailPage() {
             <section className="border-b p-6">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div className="flex flex-col items-center md:items-start">
-                  <img
+                  <Image
                     src={vendor.imageUrl || "/images/placeholder.jpg"}
                     alt={vendor.name}
                     className="w-34 h-34 object-cover rounded-lg mb-4"
@@ -243,8 +244,6 @@ export default function VendorDetailPage() {
                     </div>
                   </div>
                 </div>
-              ) : error ? (
-                <p className="text-red-600">Error: {error}</p>
               ) : menus.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8">
                   <svg
@@ -276,7 +275,7 @@ export default function VendorDetailPage() {
                       key={item.id}
                       className="relative rounded-2xl p-2 mt-3 flex flex-row gap-4 items-center"
                     >
-                      <img
+                      <Image
                         src={item.imageUrl || "/images/placeholder.jpg"}
                         alt={item.name}
                         className="w-1/3 h-30 object-cover rounded-lg"
@@ -321,10 +320,12 @@ export default function VendorDetailPage() {
               </h2>
               <div className="flex gap-4 overflow-x-auto">
                 {caterer.gallery.map((img, idx) => (
-                  <img
+                  <Image
                     key={idx}
                     src={img}
                     alt={`Event ${idx + 1}`}
+                    width={400}
+                    height={300}
                     className="h-28 w-44 object-cover rounded-lg border border-gray-100 shadow-sm"
                   />
                 ))}

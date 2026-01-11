@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm, FormProvider, useFormContext } from "react-hook-form";
+import Image from "next/image";
 import {
   Dialog,
   DialogTrigger,
@@ -19,6 +20,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+type FoodItemFormValues = {
+  name: string;
+  description: string;
+  category: string;
+  imageUrl: string;
+  selectedFile: File | null;
+};
+
 export default function FoodItemForm({
   initialValues,
   onSubmit,
@@ -29,14 +38,14 @@ export default function FoodItemForm({
   triggerLabel = "Add Food Item",
 }: {
   vendorId: number;
-  initialValues?: any;
-  onSubmit: (data: any) => Promise<void>;
+  initialValues?: Partial<FoodItemFormValues>;
+  onSubmit: (data: FoodItemFormValues & { vendorId: number }) => Promise<void>;
   open?: boolean;
   setOpen?: (open: boolean) => void;
   isEdit?: boolean;
   triggerLabel?: string;
 }) {
-  const methods = useForm({
+  const methods = useForm<FoodItemFormValues>({
     defaultValues: {
       name: "",
       description: "",
@@ -93,7 +102,8 @@ export default function FoodItemForm({
     [vendorId]
   );
 
-  const handleSubmit = async (data: any) => {
+ const handleSubmit = async (data: FoodItemFormValues) => {
+
     setLoading(true);
     try {
       // If a new file was selected, upload it
@@ -101,7 +111,7 @@ export default function FoodItemForm({
         try {
           const imagePath = await handleImageUpload(data.selectedFile);
           data.imageUrl = imagePath;
-        } catch (error) {
+        } catch {
           methods.setError("imageUrl", {
             type: "manual",
             message: "Failed to upload image",
@@ -122,21 +132,24 @@ export default function FoodItemForm({
       setLoading(false);
     }
   };
-const dialogOpen = typeof open === "boolean" ? open : internalDialogOpen;
+  const dialogOpen = typeof open === "boolean" ? open : internalDialogOpen;
   const handleDialogOpenChange = (value: boolean) => {
     if (setOpen) setOpen(value);
     else setInternalDialogOpen(value);
   };
 
   const FormContent = () => {
-    const methods = useFormContext();
+    const methods = useFormContext<FoodItemFormValues>();
+
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+    const initialImageUrl = initialValues?.imageUrl;
+
     useEffect(() => {
-      if (initialValues?.imageUrl) {
-        setPreviewUrl(initialValues.imageUrl);
+      if (initialImageUrl) {
+        setPreviewUrl(initialImageUrl);
       }
-    }, [initialValues]);
+    }, [initialImageUrl]);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
@@ -201,7 +214,7 @@ const dialogOpen = typeof open === "boolean" ? open : internalDialogOpen;
             </>
           )}
         />
-       <FormField
+        <FormField
           name="imageUrl"
           control={methods.control}
           rules={{
@@ -219,14 +232,12 @@ const dialogOpen = typeof open === "boolean" ? open : internalDialogOpen;
               <FormControl>
                 <div className="space-y-2">
                   <div className="mt-2">
-                    <img
+                    <Image
                       src={previewUrl || "/images/placeholder.jpg"}
                       alt="Preview"
-                      className="h-32 w-32 object-cover rounded-md border"
-                      onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src =
-                          "/images/placeholder.jpg";
-                      }}
+                      width={128}
+                      height={128}
+                      className="object-cover rounded-md border"
                     />
                   </div>
                   <Input

@@ -4,13 +4,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormMessage,
-  FormControl,
-} from "@/components/ui/form";
+import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -23,11 +17,7 @@ type LoginFormValues = {
   password: string;
 };
 
-export default function LoginForm({
-  onSubmit,
-}: {
-  onSubmit?: (data: LoginFormValues) => void;
-}) {
+export default function LoginForm() {
   const form = useForm<LoginFormValues>({
     defaultValues: { email: "", password: "" },
   });
@@ -50,8 +40,12 @@ export default function LoginForm({
       } else {
         setError("Login failed. Please check your credentials.");
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unexpected error occurred.");
+      }
     } finally {
       setLoading(false);
     }
@@ -153,12 +147,11 @@ export default function LoginForm({
       </form>
 
       <div className="text-center text-sm text-gray-500">
-        Don't have an account?{" "}
+        Don&apos;t have an account?{" "}
         <Button asChild variant="link" className="px-2">
           <Link href="/cater/signup">Register here</Link>
         </Button>
       </div>
-
     </Form>
   );
 }

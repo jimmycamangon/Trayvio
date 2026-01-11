@@ -12,7 +12,6 @@ export default function MenuCard({
   imageUrl,
   isActive,
   createdAt,
-  updatedAt,
   onEdit,
   onDelete,
 }: Menu & {
